@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Search Root VC-->
+        <scene sceneID="ek8-0o-lWl">
+            <objects>
+                <viewController title="Search Root VC" id="Cvh-UU-gTr" customClass="SearchTabRootVC" customModule="RealHome" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="CLZ-Z6-cJ7"/>
+                        <viewControllerLayoutGuide type="bottom" id="XzC-Zc-gtk"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wVq-he-tDZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="CZa-LB-oQR">
+                        <barButtonItem key="rightBarButtonItem" title="Sign In" style="done" id="SSJ-pQ-Ihi">
+                            <connections>
+                                <action selector="loginAction:" destination="Cvh-UU-gTr" id="x4b-Rp-NFI"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="signInItemBtn" destination="SSJ-pQ-Ihi" id="njE-Uf-p3L"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Uwh-It-9id" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="876" y="23"/>
+        </scene>
+        <!--Navigator for search root-->
+        <scene sceneID="2Rf-pC-41H">
+            <objects>
+                <navigationController storyboardIdentifier="SearchTabRootNav" title="Navigator for search root" automaticallyAdjustsScrollViewInsets="NO" id="OtB-OO-ZCG" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="EFA-JH-ibb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Cvh-UU-gTr" kind="relationship" relationship="rootViewController" id="fGt-x6-A97"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t37-d5-Idw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52" y="22.938530734632685"/>
+        </scene>
+    </scenes>
+</document>

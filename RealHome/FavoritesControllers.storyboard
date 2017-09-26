@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Favorites root VC-->
+        <scene sceneID="xWZ-MW-FOM">
+            <objects>
+                <viewController title="Favorites root VC" id="jbZ-zu-ZPW" customClass="FavoritesTabRootVC" customModule="RealHome" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="asw-ol-szE"/>
+                        <viewControllerLayoutGuide type="bottom" id="GJ3-2H-IZN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3lN-3Y-3Cs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="loF-R1-Up3">
+                        <barButtonItem key="rightBarButtonItem" title="Sign In" style="done" id="gRp-CF-QI5">
+                            <connections>
+                                <action selector="signinAction:" destination="jbZ-zu-ZPW" id="p7w-Nn-PUa"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="signInItemBtn" destination="gRp-CF-QI5" id="A6V-Ot-ORG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0fG-ic-1tl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="968.79999999999995" y="-9.4452773613193415"/>
+        </scene>
+        <!--Navigator for favorites root-->
+        <scene sceneID="Z1a-UJ-XTx">
+            <objects>
+                <navigationController storyboardIdentifier="FavoritesTabRootNav" title="Navigator for favorites root" automaticallyAdjustsScrollViewInsets="NO" id="39p-v8-h0M" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="5cU-wL-3to">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="jbZ-zu-ZPW" kind="relationship" relationship="rootViewController" id="kqq-lr-rC2"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6XW-a6-lYS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="29.600000000000001" y="-9.4452773613193415"/>
+        </scene>
+    </scenes>
+</document>
