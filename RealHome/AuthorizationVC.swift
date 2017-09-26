@@ -52,14 +52,15 @@ class AuthorizationVC: UIViewController {
         if let _ = userEmail, let _ = userPassword {
             self.connectingServer()
         } else {
-        /*
+        
             let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
             let controller = storyB.instantiateViewController(withIdentifier: "MainTabsNotLoggedIn")
             self.present(controller, animated: true, completion: nil)
-        */
+ /*
             let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
             let controller = storyB.instantiateViewController(withIdentifier: "BuyerTabsLoggedIn")
             self.present(controller, animated: true, completion: nil)
+ */
         }
     }
     
