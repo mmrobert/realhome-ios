@@ -55,12 +55,13 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="appNameLabel" destination="qsl-yD-BF1" id="q93-cW-ORt"/>
                         <outlet property="errorMsgLabel" destination="cnH-ED-v7J" id="lyD-p0-tz3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JdL-UG-W67" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="78" y="-2767"/>
+            <point key="canvasLocation" x="52" y="-2695"/>
         </scene>
         <!--LoginVC-->
         <scene sceneID="pmh-Bd-fap">
@@ -222,21 +223,24 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="cancelItem" destination="6UX-k9-zh6" id="AqN-QP-vzM"/>
                         <outlet property="containerEmailPW" destination="okn-jf-aFq" id="rWK-sn-nvR"/>
                         <outlet property="emailImg" destination="Lku-Wn-ofp" id="RIs-Yc-M2V"/>
                         <outlet property="emailText" destination="A7M-gR-fCX" id="bC6-Zz-mRM"/>
+                        <outlet property="forgotPWBtn" destination="PxN-RI-kPn" id="8ub-3j-L4u"/>
                         <outlet property="loginBtn" destination="LNz-qb-Med" id="al8-Oa-hl4"/>
                         <outlet property="pwImg" destination="hji-ia-sY4" id="vT7-TQ-4dc"/>
                         <outlet property="pwText" destination="9Nz-T8-fKY" id="Ii8-mb-P4R"/>
+                        <outlet property="registerBtn" destination="ao6-Cq-OfT" id="Gn8-c6-2wH"/>
                         <outlet property="scrollViewBottomDistance" destination="dgp-y0-YK3" id="8Jv-3J-ttc"/>
                         <outlet property="viewDismissKB" destination="s3A-Hs-GHH" id="0gF-Hr-iNo"/>
-                        <segue destination="rfc-Bm-wez" kind="unwind" identifier="loginReturnToTab" unwindAction="returnedFromLogInSegue:" id="iq5-gm-zPb"/>
+                        <segue destination="rfc-Bm-wez" kind="unwind" identifier="loginReturnToMainTab" unwindAction="returnedFromLogInSegue:" id="iq5-gm-zPb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zpa-3y-BiV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="rfc-Bm-wez" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="836" y="-2340"/>
+            <point key="canvasLocation" x="817" y="-2696"/>
         </scene>
         <!--Role ChooseVC-->
         <scene sceneID="hjb-vu-CgO">
@@ -305,11 +309,12 @@
                         <outlet property="agentLabel" destination="b3C-7t-6ee" id="Xrc-DF-luW"/>
                         <outlet property="buyerImg" destination="j7w-K8-LHi" id="3T5-g3-oV8"/>
                         <outlet property="buyerLabel" destination="C12-nr-Qc0" id="Sob-DP-hvK"/>
+                        <outlet property="registerAsLabel" destination="tDL-Rn-Maw" id="YxB-uP-mJf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ngc-XH-8ow" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="836" y="-1616"/>
+            <point key="canvasLocation" x="817" y="-1973"/>
         </scene>
         <!--RegisterVC-->
         <scene sceneID="kaP-qX-hGH">
@@ -431,6 +436,9 @@
                                                 <state key="normal" title="Register">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="registerAction:" destination="za9-Av-AmZ" eventType="touchUpInside" id="3he-T6-oqD"/>
+                                                </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By signing up, you are" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gES-Q5-UjN">
                                                 <rect key="frame" x="112" y="271.5" width="151" height="18"/>
@@ -449,6 +457,9 @@
                                                 <state key="normal" title="Terms and Conditions.">
                                                     <color key="titleColor" red="0.98724489795918369" green="0.48593197562312929" blue="0.20389562074829931" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <segue destination="VPa-px-k3t" kind="show" id="PkX-iP-Wpf"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.94117647058823528" green="0.93994472789115646" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>
@@ -490,10 +501,107 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="rDH-F6-dMA"/>
+                    <connections>
+                        <outlet property="bySignLabel1" destination="gES-Q5-UjN" id="tIz-GS-E3z"/>
+                        <outlet property="bySignLabel2" destination="fiZ-b6-tvA" id="q6T-QB-cjf"/>
+                        <outlet property="containerEmailPW" destination="jd0-1E-ffp" id="sES-R9-4a7"/>
+                        <outlet property="emailImg" destination="EtP-6I-YIF" id="pO9-em-s06"/>
+                        <outlet property="emailText" destination="hLl-LZ-NN1" id="ggj-i1-vqI"/>
+                        <outlet property="pwConfirmImg" destination="Mdp-2g-cYz" id="lr4-n9-c9X"/>
+                        <outlet property="pwConfirmText" destination="Dcm-EY-63t" id="Xm8-KN-X4Q"/>
+                        <outlet property="pwImg" destination="WyG-YR-iHH" id="jHO-sy-0Fh"/>
+                        <outlet property="pwText" destination="BLo-1W-ZSo" id="y2r-Hk-7OA"/>
+                        <outlet property="registerBtn" destination="Ilz-GW-B0i" id="9e0-Vy-tsN"/>
+                        <outlet property="scrollViewBottomDistance" destination="Egy-KX-QE7" id="98A-dg-cq4"/>
+                        <outlet property="termsBtn" destination="yz0-5d-esH" id="5Xq-Yp-OId"/>
+                        <outlet property="welcomeLabel" destination="eTi-yh-9L7" id="ttf-f2-Zpq"/>
+                        <segue destination="vWa-JR-Ylo" kind="unwind" identifier="registerReturnToMainTab" unwindAction="returnedFromLogInSegue:" id="GCS-RS-Ief"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oh4-fo-syh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="vWa-JR-Ylo" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1662" y="-2029"/>
+            <point key="canvasLocation" x="1630" y="-1965"/>
+        </scene>
+        <!--AgreementVC-->
+        <scene sceneID="ByV-cg-Afc">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="VPa-px-k3t" customClass="AgreementVC" customModule="RealHome" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jMO-xg-eAf"/>
+                        <viewControllerLayoutGuide type="bottom" id="gde-UD-xCt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="F1I-6F-cbM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GBT-YS-pUo">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i1b-UP-c4j" userLabel="container view">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="88"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="923-LQ-bYo">
+                                                <rect key="frame" x="20" y="10" width="335" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t3o-2g-lgf">
+                                                <rect key="frame" x="20" y="41" width="335" height="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lZG-Xj-QXh">
+                                                <rect key="frame" x="20" y="60" width="335" height="18"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="923-LQ-bYo" firstAttribute="leading" secondItem="i1b-UP-c4j" secondAttribute="leading" constant="20" id="9fO-hR-kbb"/>
+                                            <constraint firstItem="t3o-2g-lgf" firstAttribute="top" secondItem="923-LQ-bYo" secondAttribute="bottom" constant="10" id="KRf-KH-hS1"/>
+                                            <constraint firstAttribute="trailing" secondItem="lZG-Xj-QXh" secondAttribute="trailing" constant="20" id="NST-ei-Bnh"/>
+                                            <constraint firstAttribute="trailing" secondItem="923-LQ-bYo" secondAttribute="trailing" constant="20" id="Sdo-2Y-Mpc"/>
+                                            <constraint firstAttribute="bottom" secondItem="lZG-Xj-QXh" secondAttribute="bottom" constant="10" id="W6d-Fb-d27"/>
+                                            <constraint firstItem="t3o-2g-lgf" firstAttribute="leading" secondItem="i1b-UP-c4j" secondAttribute="leading" constant="20" id="YnG-76-Sn5"/>
+                                            <constraint firstItem="lZG-Xj-QXh" firstAttribute="leading" secondItem="i1b-UP-c4j" secondAttribute="leading" constant="20" id="ggr-Qr-iFm"/>
+                                            <constraint firstAttribute="trailing" secondItem="t3o-2g-lgf" secondAttribute="trailing" constant="20" id="hW1-vb-Rbc"/>
+                                            <constraint firstItem="923-LQ-bYo" firstAttribute="top" secondItem="i1b-UP-c4j" secondAttribute="top" constant="10" id="ngk-wn-6U8"/>
+                                            <constraint firstItem="lZG-Xj-QXh" firstAttribute="top" secondItem="t3o-2g-lgf" secondAttribute="bottom" constant="1" id="vaS-Qm-X6Q"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="i1b-UP-c4j" secondAttribute="bottom" id="7Ss-Eg-n7i"/>
+                                    <constraint firstAttribute="trailing" secondItem="i1b-UP-c4j" secondAttribute="trailing" id="Hyi-Q0-Hay"/>
+                                    <constraint firstItem="i1b-UP-c4j" firstAttribute="leading" secondItem="GBT-YS-pUo" secondAttribute="leading" id="OZW-Pk-pBG"/>
+                                    <constraint firstItem="i1b-UP-c4j" firstAttribute="top" secondItem="GBT-YS-pUo" secondAttribute="top" id="luF-k6-UHX"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="GBT-YS-pUo" firstAttribute="leading" secondItem="F1I-6F-cbM" secondAttribute="leading" id="6jd-Ni-G75"/>
+                            <constraint firstItem="GBT-YS-pUo" firstAttribute="top" secondItem="jMO-xg-eAf" secondAttribute="bottom" id="GMq-uk-ss7"/>
+                            <constraint firstItem="gde-UD-xCt" firstAttribute="top" secondItem="GBT-YS-pUo" secondAttribute="bottom" id="N90-w3-f3p"/>
+                            <constraint firstAttribute="trailing" secondItem="GBT-YS-pUo" secondAttribute="trailing" id="a0v-hi-zdb"/>
+                            <constraint firstItem="i1b-UP-c4j" firstAttribute="width" secondItem="F1I-6F-cbM" secondAttribute="width" id="t6N-Df-9OT"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="5C7-r0-wG1"/>
+                    <connections>
+                        <outlet property="content1Label" destination="t3o-2g-lgf" id="s6r-Wc-MaI"/>
+                        <outlet property="content2Label" destination="lZG-Xj-QXh" id="tRv-G7-SdW"/>
+                        <outlet property="titleLabel" destination="923-LQ-bYo" id="s9G-rZ-gZr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p50-mN-k3d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2404" y="-2248.4257871064469"/>
         </scene>
         <!--Reset Password-->
         <scene sceneID="KgO-2E-CpG">
@@ -596,13 +704,14 @@
                         <outlet property="containerEmail" destination="Yql-lv-Drk" id="7xR-fG-QKH"/>
                         <outlet property="emailImg" destination="ZFo-KX-fMz" id="KKU-2r-DZJ"/>
                         <outlet property="emailText" destination="MKD-EG-rVg" id="taJ-SK-mw0"/>
+                        <outlet property="resetBtn" destination="vRV-e1-rf8" id="XdP-X6-sid"/>
                         <outlet property="resetReminderLabel" destination="U1R-go-IaP" id="OOx-gR-6RK"/>
                         <outlet property="scrollViewBottomDistance" destination="2Il-o0-OZc" id="hVw-0S-Pwt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wA2-6P-nJQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1662" y="-2767"/>
+            <point key="canvasLocation" x="1630" y="-2696"/>
         </scene>
         <!--Navigator for login-->
         <scene sceneID="65l-d6-2GT">
@@ -620,7 +729,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ewk-UK-kOn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="39" y="-1885"/>
+            <point key="canvasLocation" x="52" y="-1973"/>
         </scene>
     </scenes>
     <resources>

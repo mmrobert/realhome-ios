@@ -15,12 +15,15 @@ import RxSwift
 
 class AuthorizationVC: UIViewController {
     
+    @IBOutlet weak var appNameLabel: UILabel!
     @IBOutlet weak var errorMsgLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        self.appNameLabel.text = appName
         
         self.errorMsgLabel.text = ""
     }
@@ -44,8 +47,8 @@ class AuthorizationVC: UIViewController {
          [[NSUserDefaults standardUserDefaults] synchronize];
          */
         
-        let userEmail = UserDefaults.standard.object(forKey: uEmail)
-        let userPassword = UserDefaults.standard.object(forKey: uPassword)
+        let userEmail = UserDefaults.standard.object(forKey: uEmail) as? String
+        let userPassword = UserDefaults.standard.object(forKey: uPassword) as? String
         
         //  [[NSUserDefaults standardUserDefaults] removeObjectForKey:myCountry];
         
@@ -53,6 +56,9 @@ class AuthorizationVC: UIViewController {
             self.connectingServer()
         } else {
         
+            UserDefaults.standard.set(true, forKey: uFirstLogIn)
+            UserDefaults.standard.synchronize()
+            
             let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
             let controller = storyB.instantiateViewController(withIdentifier: "MainTabsNotLoggedIn")
             self.present(controller, animated: true, completion: nil)
@@ -107,14 +113,22 @@ class AuthorizationVC: UIViewController {
         let userRole: String? = UserDefaults.standard.object(forKey: uRole) as? String
         
         if let _userRole = userRole, _userRole == "buyer" {
+            UserDefaults.standard.set(false, forKey: uFirstLogIn)
+            UserDefaults.standard.synchronize()
             let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
             let controller = storyB.instantiateViewController(withIdentifier: "BuyerTabsLoggedIn")
             self.present(controller, animated: true, completion: nil)
         } else {
+            UserDefaults.standard.set(false, forKey: uFirstLogIn)
+            UserDefaults.standard.synchronize()
             let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
             let controller = storyB.instantiateViewController(withIdentifier: "AgentTabsLoggedIn")
             self.present(controller, animated: true, completion: nil)
         }
+    }
+    
+    @IBAction func returnedFromLogOutToAuth(segue: UIStoryboardSegue) {
+        
     }
     
     fileprivate func presentAlert(aTitle: String?, withMsg: String?, confirmTitle: String?) {
@@ -142,9 +156,9 @@ class AuthorizationVC: UIViewController {
          exit(0)
          }
          */
-        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert);
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
         let enterPWAct = UIAlertAction(title: confirmTitle, style: .default, handler: enterPWHandler)
-        alert.addAction(enterPWAct);
+        alert.addAction(enterPWAct)
         //   let closeAppAct = UIAlertAction(title: "Close App", style: .default, handler: closeAppHandler)
         //   alert.addAction(closeAppAct)
         self.present(alert, animated: true, completion: nil)

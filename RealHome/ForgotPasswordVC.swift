@@ -11,6 +11,7 @@ import UIKit
 class ForgotPasswordVC: UIViewController {
     
     @IBOutlet weak var resetReminderLabel: UILabel!
+    @IBOutlet weak var resetBtn: UIButton!
     
     @IBOutlet weak var containerEmail: UIView!
     @IBOutlet weak var emailImg: UIImageView!
@@ -19,6 +20,12 @@ class ForgotPasswordVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+      
+    // for localized
+        self.navigationItem.title = resetPasswordStr
+        self.resetReminderLabel.text = resetPWreminderStr
+        self.emailText.placeholder = emailStr
+        self.resetBtn.setTitle(resetPasswordStr, for: .normal)
 
         // Do any additional setup after loading the view.
         

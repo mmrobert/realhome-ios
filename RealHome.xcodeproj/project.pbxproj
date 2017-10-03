@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		4876EFB4EE381F4AA81D3C32 /* Pods_RealHome.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D22A8CA8AB7CB816A703CF7 /* Pods_RealHome.framework */; };
 		75CBF91713616AA1DB4A00F7 /* Pods_RealHomeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0DC88E94AC4BBF72103F5FD /* Pods_RealHomeTests.framework */; };
+		9B19348B1F7FEEFC00EBDC6D /* HelpFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B19348A1F7FEEFC00EBDC6D /* HelpFunctions.swift */; };
+		9B19348D1F82F2B700EBDC6D /* FavoritesListTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B19348C1F82F2B700EBDC6D /* FavoritesListTableCell.swift */; };
+		9B19348F1F82F2D300EBDC6D /* NoFavoritesTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B19348E1F82F2D300EBDC6D /* NoFavoritesTableCell.swift */; };
+		9B29CB131F7F202300D124D1 /* GenderChoiceTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B29CB121F7F202300D124D1 /* GenderChoiceTableCell.swift */; };
 		9B539EDD1F79352D007AE1D0 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B539EDC1F79352D007AE1D0 /* LoginVC.swift */; };
 		9B5632AC1F76C58E00A5C599 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5632AB1F76C58E00A5C599 /* AppDelegate.swift */; };
 		9B5632B11F76C58E00A5C599 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B5632AF1F76C58E00A5C599 /* Main.storyboard */; };
@@ -34,10 +38,19 @@
 		9B5824BB1F7AB41100CB16F3 /* AgentTCLoggedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824BA1F7AB41100CB16F3 /* AgentTCLoggedIn.swift */; };
 		9B5824BD1F7AC2A600CB16F3 /* SearchTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824BC1F7AC2A600CB16F3 /* SearchTabRootVC.swift */; };
 		9B5824BF1F7AC2D800CB16F3 /* FavoritesTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824BE1F7AC2D800CB16F3 /* FavoritesTabRootVC.swift */; };
-		9B5824C11F7AC2FD00CB16F3 /* SettingsTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824C01F7AC2FD00CB16F3 /* SettingsTabRootVC.swift */; };
 		9B5824C31F7AC32700CB16F3 /* BuyerTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824C21F7AC32700CB16F3 /* BuyerTabRootVC.swift */; };
 		9B5824C51F7AC35000CB16F3 /* AgentTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5824C41F7AC35000CB16F3 /* AgentTabRootVC.swift */; };
 		9B76F29D1F782772000AB94D /* RealHomeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B76F29C1F782772000AB94D /* RealHomeAPI.swift */; };
+		9B832ECB1F7DA68D00DC1D49 /* PersonalDataTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B832ECA1F7DA68D00DC1D49 /* PersonalDataTableVC.swift */; };
+		9B832ECD1F7DAC3800DC1D49 /* UserImgSettingsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B832ECC1F7DAC3800DC1D49 /* UserImgSettingsTableCell.swift */; };
+		9B832ECF1F7DB56400DC1D49 /* TextFieldSettingsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B832ECE1F7DB56400DC1D49 /* TextFieldSettingsTableCell.swift */; };
+		9B832ED11F7DBF1900DC1D49 /* ErrorMsgTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B832ED01F7DBF1900DC1D49 /* ErrorMsgTableCell.swift */; };
+		9BD98FD41F7B42D500ADC85E /* AgreementVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FD31F7B42D500ADC85E /* AgreementVC.swift */; };
+		9BD98FD61F7BE6A100ADC85E /* SettingsTabRootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FD51F7BE6A100ADC85E /* SettingsTabRootVC.swift */; };
+		9BD98FD81F7C290400ADC85E /* LogOutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FD71F7C290400ADC85E /* LogOutVC.swift */; };
+		9BD98FDA1F7C30D200ADC85E /* ConstantLocalized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FD91F7C30D200ADC85E /* ConstantLocalized.swift */; };
+		9BD98FDC1F7C713500ADC85E /* ContactUsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FDB1F7C713500ADC85E /* ContactUsVC.swift */; };
+		9BD98FDE1F7D40D500ADC85E /* LanguageTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD98FDD1F7D40D500ADC85E /* LanguageTableVC.swift */; };
 		F75687BE3EC107FFA09F1E1A /* Pods_RealHomeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D39B1471BA7FC9A3A2F5457 /* Pods_RealHomeUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +77,10 @@
 		173FE51A377FF65D7FA0589C /* Pods-RealHome.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealHome.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RealHome/Pods-RealHome.debug.xcconfig"; sourceTree = "<group>"; };
 		4D22A8CA8AB7CB816A703CF7 /* Pods_RealHome.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealHome.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D39B1471BA7FC9A3A2F5457 /* Pods_RealHomeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealHomeUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B19348A1F7FEEFC00EBDC6D /* HelpFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpFunctions.swift; sourceTree = "<group>"; };
+		9B19348C1F82F2B700EBDC6D /* FavoritesListTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesListTableCell.swift; sourceTree = "<group>"; };
+		9B19348E1F82F2D300EBDC6D /* NoFavoritesTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoFavoritesTableCell.swift; sourceTree = "<group>"; };
+		9B29CB121F7F202300D124D1 /* GenderChoiceTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenderChoiceTableCell.swift; sourceTree = "<group>"; };
 		9B539EDC1F79352D007AE1D0 /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		9B5632A81F76C58E00A5C599 /* RealHome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealHome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B5632AB1F76C58E00A5C599 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -95,10 +112,19 @@
 		9B5824BA1F7AB41100CB16F3 /* AgentTCLoggedIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgentTCLoggedIn.swift; sourceTree = "<group>"; };
 		9B5824BC1F7AC2A600CB16F3 /* SearchTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTabRootVC.swift; sourceTree = "<group>"; };
 		9B5824BE1F7AC2D800CB16F3 /* FavoritesTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesTabRootVC.swift; sourceTree = "<group>"; };
-		9B5824C01F7AC2FD00CB16F3 /* SettingsTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTabRootVC.swift; sourceTree = "<group>"; };
 		9B5824C21F7AC32700CB16F3 /* BuyerTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuyerTabRootVC.swift; sourceTree = "<group>"; };
 		9B5824C41F7AC35000CB16F3 /* AgentTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgentTabRootVC.swift; sourceTree = "<group>"; };
 		9B76F29C1F782772000AB94D /* RealHomeAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealHomeAPI.swift; sourceTree = "<group>"; };
+		9B832ECA1F7DA68D00DC1D49 /* PersonalDataTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalDataTableVC.swift; sourceTree = "<group>"; };
+		9B832ECC1F7DAC3800DC1D49 /* UserImgSettingsTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserImgSettingsTableCell.swift; sourceTree = "<group>"; };
+		9B832ECE1F7DB56400DC1D49 /* TextFieldSettingsTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldSettingsTableCell.swift; sourceTree = "<group>"; };
+		9B832ED01F7DBF1900DC1D49 /* ErrorMsgTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorMsgTableCell.swift; sourceTree = "<group>"; };
+		9BD98FD31F7B42D500ADC85E /* AgreementVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgreementVC.swift; sourceTree = "<group>"; };
+		9BD98FD51F7BE6A100ADC85E /* SettingsTabRootVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTabRootVC.swift; sourceTree = "<group>"; };
+		9BD98FD71F7C290400ADC85E /* LogOutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogOutVC.swift; sourceTree = "<group>"; };
+		9BD98FD91F7C30D200ADC85E /* ConstantLocalized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantLocalized.swift; sourceTree = "<group>"; };
+		9BD98FDB1F7C713500ADC85E /* ContactUsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactUsVC.swift; sourceTree = "<group>"; };
+		9BD98FDD1F7D40D500ADC85E /* LanguageTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageTableVC.swift; sourceTree = "<group>"; };
 		B0C233F6BC9F18534DBC6413 /* Pods-RealHomeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealHomeUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RealHomeUITests/Pods-RealHomeUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		C0DC88E94AC4BBF72103F5FD /* Pods_RealHomeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealHomeTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9FB49A70C79AC7B78C15E95 /* Pods-RealHomeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealHomeTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RealHomeTests/Pods-RealHomeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -153,6 +179,7 @@
 				9B5824961F79911500CB16F3 /* ForgotPasswordVC.swift */,
 				9B5824981F79ADB600CB16F3 /* RoleChooseVC.swift */,
 				9B58249A1F79B71300CB16F3 /* RegisterVC.swift */,
+				9BD98FD31F7B42D500ADC85E /* AgreementVC.swift */,
 			);
 			name = LoginGroup;
 			sourceTree = "<group>";
@@ -200,9 +227,11 @@
 				9B539EDB1F7934F4007AE1D0 /* LoginGroup */,
 				9B5632B51F76C58E00A5C599 /* Assets.xcassets */,
 				9B5632B71F76C58E00A5C599 /* LaunchScreen.storyboard */,
+				9B19348A1F7FEEFC00EBDC6D /* HelpFunctions.swift */,
 				9B76F29C1F782772000AB94D /* RealHomeAPI.swift */,
 				9B5632E01F781EA000A5C599 /* SingletonObjects.swift */,
 				9B5632E21F781ECC00A5C599 /* Constants.swift */,
+				9BD98FD91F7C30D200ADC85E /* ConstantLocalized.swift */,
 				9B5632BA1F76C58E00A5C599 /* Info.plist */,
 				9B5632B21F76C58E00A5C599 /* RealHome.xcdatamodeld */,
 			);
@@ -249,6 +278,8 @@
 			isa = PBXGroup;
 			children = (
 				9B5824BE1F7AC2D800CB16F3 /* FavoritesTabRootVC.swift */,
+				9B19348C1F82F2B700EBDC6D /* FavoritesListTableCell.swift */,
+				9B19348E1F82F2D300EBDC6D /* NoFavoritesTableCell.swift */,
 			);
 			name = FavoritesGroup;
 			sourceTree = "<group>";
@@ -256,7 +287,15 @@
 		9B5824A71F7AAC5C00CB16F3 /* SettingsGroup */ = {
 			isa = PBXGroup;
 			children = (
-				9B5824C01F7AC2FD00CB16F3 /* SettingsTabRootVC.swift */,
+				9BD98FD51F7BE6A100ADC85E /* SettingsTabRootVC.swift */,
+				9B832ECA1F7DA68D00DC1D49 /* PersonalDataTableVC.swift */,
+				9B832ECC1F7DAC3800DC1D49 /* UserImgSettingsTableCell.swift */,
+				9B832ECE1F7DB56400DC1D49 /* TextFieldSettingsTableCell.swift */,
+				9B29CB121F7F202300D124D1 /* GenderChoiceTableCell.swift */,
+				9B832ED01F7DBF1900DC1D49 /* ErrorMsgTableCell.swift */,
+				9BD98FDD1F7D40D500ADC85E /* LanguageTableVC.swift */,
+				9BD98FDB1F7C713500ADC85E /* ContactUsVC.swift */,
+				9BD98FD71F7C290400ADC85E /* LogOutVC.swift */,
 			);
 			name = SettingsGroup;
 			sourceTree = "<group>";
@@ -578,23 +617,36 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B5632E31F781ECC00A5C599 /* Constants.swift in Sources */,
+				9B19348F1F82F2D300EBDC6D /* NoFavoritesTableCell.swift in Sources */,
 				9B5824BB1F7AB41100CB16F3 /* AgentTCLoggedIn.swift in Sources */,
 				9B5824991F79ADB600CB16F3 /* RoleChooseVC.swift in Sources */,
 				9B5632B41F76C58E00A5C599 /* RealHome.xcdatamodeld in Sources */,
 				9B5824971F79911500CB16F3 /* ForgotPasswordVC.swift in Sources */,
 				9B5632AC1F76C58E00A5C599 /* AppDelegate.swift in Sources */,
+				9B19348D1F82F2B700EBDC6D /* FavoritesListTableCell.swift in Sources */,
+				9B832ECD1F7DAC3800DC1D49 /* UserImgSettingsTableCell.swift in Sources */,
 				9B5824B91F7AB3EE00CB16F3 /* BuyerTCLoggedIn.swift in Sources */,
 				9B5824B71F7AB3B500CB16F3 /* MainTCNotLoggedIn.swift in Sources */,
-				9B5824C11F7AC2FD00CB16F3 /* SettingsTabRootVC.swift in Sources */,
 				9B5824C31F7AC32700CB16F3 /* BuyerTabRootVC.swift in Sources */,
+				9B29CB131F7F202300D124D1 /* GenderChoiceTableCell.swift in Sources */,
 				9B539EDD1F79352D007AE1D0 /* LoginVC.swift in Sources */,
+				9BD98FD61F7BE6A100ADC85E /* SettingsTabRootVC.swift in Sources */,
+				9B832ECF1F7DB56400DC1D49 /* TextFieldSettingsTableCell.swift in Sources */,
 				9B76F29D1F782772000AB94D /* RealHomeAPI.swift in Sources */,
 				9B5632E11F781EA000A5C599 /* SingletonObjects.swift in Sources */,
 				9B5824BF1F7AC2D800CB16F3 /* FavoritesTabRootVC.swift in Sources */,
 				9B5824BD1F7AC2A600CB16F3 /* SearchTabRootVC.swift in Sources */,
+				9B832ED11F7DBF1900DC1D49 /* ErrorMsgTableCell.swift in Sources */,
+				9BD98FDC1F7C713500ADC85E /* ContactUsVC.swift in Sources */,
+				9BD98FDE1F7D40D500ADC85E /* LanguageTableVC.swift in Sources */,
 				9B5632DF1F781E2000A5C599 /* AuthorizationVC.swift in Sources */,
+				9BD98FD81F7C290400ADC85E /* LogOutVC.swift in Sources */,
+				9B832ECB1F7DA68D00DC1D49 /* PersonalDataTableVC.swift in Sources */,
 				9B58249B1F79B71300CB16F3 /* RegisterVC.swift in Sources */,
+				9BD98FD41F7B42D500ADC85E /* AgreementVC.swift in Sources */,
 				9B5824C51F7AC35000CB16F3 /* AgentTabRootVC.swift in Sources */,
+				9B19348B1F7FEEFC00EBDC6D /* HelpFunctions.swift in Sources */,
+				9BD98FDA1F7C30D200ADC85E /* ConstantLocalized.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

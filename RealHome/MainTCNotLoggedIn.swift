@@ -51,9 +51,8 @@ class MainTCNotLoggedIn: UITabBarController {
     }
     */
     
+    // register also return here
     @IBAction func returnedFromLogIn(segue: UIStoryboardSegue) {
-        
-     //   print("return from login -- 899")
         
         var existedVC = self.viewControllers
         let userRole: String? = UserDefaults.standard.object(forKey: uRole) as? String
@@ -81,6 +80,10 @@ class MainTCNotLoggedIn: UITabBarController {
     }
     
     @IBAction func returnedFromLogInCancel(segue: UIStoryboardSegue) {
+        
+    }
+    
+    @IBAction func returnedFromLogOutMainTab(segue: UIStoryboardSegue) {
         
     }
 

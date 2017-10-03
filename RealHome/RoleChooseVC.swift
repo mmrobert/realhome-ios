@@ -14,9 +14,15 @@ class RoleChooseVC: UIViewController {
     @IBOutlet weak var agentImg: UIImageView!
     @IBOutlet weak var buyerLabel: UILabel!
     @IBOutlet weak var agentLabel: UILabel!
-
+    @IBOutlet weak var registerAsLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+      
+    // for localized
+        self.registerAsLabel.text = registerAsStr
+        self.buyerLabel.text = buyerSingleStr
+        self.agentLabel.text = agentStr
 
         // Do any additional setup after loading the view.
         self.buyerImg.layer.cornerRadius = 10.0

@@ -21,10 +21,23 @@ class LoginVC: UIViewController {
     
     @IBOutlet weak var scrollViewBottomDistance: NSLayoutConstraint!
     
+  // for localized language
+    @IBOutlet weak var cancelItem: UIBarButtonItem!
+    @IBOutlet weak var forgotPWBtn: UIButton!
+    @IBOutlet weak var registerBtn: UIButton!
+    
     fileprivate var userRole: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+      // for localized
+        self.cancelItem.title = cancelStr
+        self.emailText.placeholder = emailStr
+        self.pwText.placeholder = passwordStr
+        self.loginBtn.setTitle(logInStr, for: .normal)
+        self.forgotPWBtn.setTitle(forgotPWStr, for: .normal)
+        self.registerBtn.setTitle(registerStr, for: .normal)
         
         self.setUpLogo()
 
@@ -172,7 +185,7 @@ class LoginVC: UIViewController {
     
     fileprivate func toMainPages() {
         
-        self.performSegue(withIdentifier: "loginReturnToTab", sender: self)
+        self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
     
 /*
         if let _userRole = self.userRole {
@@ -197,9 +210,9 @@ class LoginVC: UIViewController {
         let enterPWHandler: Handler = { [unowned self] action in
         
         }
-        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert);
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
         let enterPWAct = UIAlertAction(title: confirmTitle, style: .default, handler: enterPWHandler)
-        alert.addAction(enterPWAct);
+        alert.addAction(enterPWAct)
         //   let closeAppAct = UIAlertAction(title: "Close App", style: .default, handler: closeAppHandler)
         //   alert.addAction(closeAppAct)
         self.present(alert, animated: true, completion: nil)
