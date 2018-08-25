@@ -18,11 +18,6 @@ class RoleChooseVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
-    // for localized
-        self.registerAsLabel.text = registerAsStr
-        self.buyerLabel.text = buyerSingleStr
-        self.agentLabel.text = agentStr
 
         // Do any additional setup after loading the view.
         self.buyerImg.layer.cornerRadius = 10.0
@@ -45,6 +40,15 @@ class RoleChooseVC: UIViewController {
         let toSignUpAgentL = UITapGestureRecognizer(target: self, action: #selector(RoleChooseVC.registerAgentLabel(tapGestureRecognizer:)))
         self.agentLabel.isUserInteractionEnabled = true
         self.agentLabel.addGestureRecognizer(toSignUpAgentL)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+      // for localized
+        self.registerAsLabel.text = LanguageGeneral.registerAsStr
+        self.buyerLabel.text = LanguageGeneral.buyerSingleStr
+        self.agentLabel.text = LanguageGeneral.agentStr
     }
 
     override func didReceiveMemoryWarning() {

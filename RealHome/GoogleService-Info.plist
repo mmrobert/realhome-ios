@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>820119635981-hhe7qj50qm9m1jhe0ag014pl34qei3on.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.820119635981-hhe7qj50qm9m1jhe0ag014pl34qei3on</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBE8dgaf80JWT0SIJ5pEVdO5nlAY6E30Ek</string>
+	<key>GCM_SENDER_ID</key>
+	<string>820119635981</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.boqiancheng.www.RealHome</string>
+	<key>PROJECT_ID</key>
+	<string>realhome-1510888833097</string>
+	<key>STORAGE_BUCKET</key>
+	<string>realhome-1510888833097.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:820119635981:ios:3aa6df7322183b5b</string>
+	<key>DATABASE_URL</key>
+	<string>https://realhome-1510888833097.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17F77" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Agent" representedClassName="Agent" syncable="YES" codeGenerationType="class">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nickName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AgentGroup" representedClassName="AgentGroup" syncable="YES" codeGenerationType="class">
+        <attribute name="groupID" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AgentGroupBuyer" representedClassName="AgentGroupBuyer" syncable="YES" codeGenerationType="class">
+        <attribute name="groupID" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FavoriteProp" representedClassName="FavoriteProp" syncable="YES" codeGenerationType="class">
+        <attribute name="listingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resiComm" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Message" representedClassName="Message" syncable="YES" codeGenerationType="class">
+        <attribute name="direction" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imgMsgURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="senderEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="senderName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="textMsg" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeStamp" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Agent" positionX="-54" positionY="63" width="128" height="105"/>
+        <element name="AgentGroup" positionX="-54" positionY="72" width="128" height="60"/>
+        <element name="FavoriteProp" positionX="-45" positionY="117" width="128" height="75"/>
+        <element name="Message" positionX="-45" positionY="72" width="128" height="135"/>
+        <element name="AgentGroupBuyer" positionX="-45" positionY="117" width="128" height="60"/>
+    </elements>
 </model>

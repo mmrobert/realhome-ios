@@ -29,8 +29,6 @@ class GenderChoiceTableCell: UITableViewCell {
         
         self.maleBtn.isMultipleSelectionEnabled = false
       //  self.femaleBtn.isSelected = true
-        self.maleBtn.setTitle(maleStr, for: .normal)
-        self.femaleBtn.setTitle(femaleStr, for: .normal)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

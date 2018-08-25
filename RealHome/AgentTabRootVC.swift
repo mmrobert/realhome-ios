@@ -9,17 +9,82 @@
 import UIKit
 
 class AgentTabRootVC: UIViewController {
-
+    
+    @IBOutlet weak var messageView: UIView!
+    @IBOutlet weak var messageLabel: UILabel!
+    
+    @IBOutlet weak var recommendationView: UIView!
+    @IBOutlet weak var recommendationLabel: UILabel!
+    
+    @IBOutlet weak var postView: UIView!
+    @IBOutlet weak var postLabel: UILabel!
+    
+    @IBOutlet weak var serviceView: UIView!
+    @IBOutlet weak var serviceLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.setUpLogo()
+        
+        let toMsgBoxVC = UITapGestureRecognizer(target: self, action: #selector(AgentTabRootVC.messageBoxVC(tapGestureRecognizer:)))
+        self.messageView.isUserInteractionEnabled = true
+        self.messageView.addGestureRecognizer(toMsgBoxVC)
+        
+        let toRecommendationVC = UITapGestureRecognizer(target: self, action: #selector(AgentTabRootVC.recommendationVC(tapGestureRecognizer:)))
+        self.recommendationView.isUserInteractionEnabled = true
+        self.recommendationView.addGestureRecognizer(toRecommendationVC)
+        
+        let toPostVC = UITapGestureRecognizer(target: self, action: #selector(AgentTabRootVC.postVC(tapGestureRecognizer:)))
+        self.postView.isUserInteractionEnabled = true
+        self.postView.addGestureRecognizer(toPostVC)
+        
+        let toServiceVC = UITapGestureRecognizer(target: self, action: #selector(AgentTabRootVC.serviceVC(tapGestureRecognizer:)))
+        self.serviceView.isUserInteractionEnabled = true
+        self.serviceView.addGestureRecognizer(toServiceVC)
+        
+     //   let ttttqq = FirebaseNodesCreation.decodeEmail(email: "a成部@aaa.com")
+     //   print("成部@aaa.com")
+     //   print(ttttqq)
     }
 
+/*
+    private func getTestFIR() {
+        let testArrQuery = testRef?.queryLimited(toLast: 200)
+        // We can use the observe method to listen for all
+        // posts from the Firebase DB with ".value"
+        testHandle = testArrQuery?.observe(.value, with: { [unowned self] (snapshot) -> Void in
+            
+            for itemSnap in snapshot.children {
+                if let _itemSnap = itemSnap as? DataSnapshot {
+                    let testKey = _itemSnap.key
+                    let testData = _itemSnap.value as? String ?? ""
+                    if testKey == "title2" {
+                        print("1-23-289pm-----" + testData)
+                    } else if testKey == "title3" {
+                        let imgDataH = HelpFunctions.stringBase64ToPhoto(imgString: testData)
+                        self.testImgV.image = UIImage(data: imgDataH!)
+                    } else {
+                        print("Error! Could not decode buyer data in agent msg box")
+                    }
+                }
+            }
+        })
+    }
+*/
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.messageLabel.text = LanguageGeneral.messages
+        self.recommendationLabel.text = LanguageGeneral.recommendations
+        self.postLabel.text = LanguageGeneral.posts
+        self.serviceLabel.text = LanguageGeneral.services
     }
     
     fileprivate func setUpLogo() {
@@ -56,6 +121,50 @@ class AgentTabRootVC: UIViewController {
         navigationItem.leftBarButtonItems = [negativeSpacer, logoItem]
         
         // navigationItem.title = "Cheng - 9876889"
+    }
+    
+    @objc fileprivate func messageBoxVC(tapGestureRecognizer: UITapGestureRecognizer) {
+        let storyB = UIStoryboard(name: "AgentControllers", bundle: nil)
+        let controller = storyB.instantiateViewController(withIdentifier: "msgBoxVCinAgent") as! MsgBoxAgent
+        controller.hidesBottomBarWhenPushed = true
+        if (self.responds(to: #selector(self.show(_:sender:)))) {
+            self.show(controller, sender: self)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
+    @objc fileprivate func recommendationVC(tapGestureRecognizer: UITapGestureRecognizer) {
+        let storyB = UIStoryboard(name: "AgentControllers", bundle: nil)
+        let controller = storyB.instantiateViewController(withIdentifier: "recommendationVCinAgent") as! RecommendationVCAgent
+        controller.hidesBottomBarWhenPushed = true
+        if (self.responds(to: #selector(self.show(_:sender:)))) {
+            self.show(controller, sender: self)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
+    @objc fileprivate func postVC(tapGestureRecognizer: UITapGestureRecognizer) {
+        let storyB = UIStoryboard(name: "AgentControllers", bundle: nil)
+        let controller = storyB.instantiateViewController(withIdentifier: "postVCinAgent") as! PostVCAgent
+        controller.hidesBottomBarWhenPushed = true
+        if (self.responds(to: #selector(self.show(_:sender:)))) {
+            self.show(controller, sender: self)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
+    @objc fileprivate func serviceVC(tapGestureRecognizer: UITapGestureRecognizer) {
+        let storyB = UIStoryboard(name: "AgentControllers", bundle: nil)
+        let controller = storyB.instantiateViewController(withIdentifier: "serviceVCinAgent") as! ServiceVCAgent
+        controller.hidesBottomBarWhenPushed = true
+        if (self.responds(to: #selector(self.show(_:sender:)))) {
+            self.show(controller, sender: self)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
     }
 
     /*

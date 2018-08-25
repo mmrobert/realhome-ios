@@ -6,7 +6,14 @@
 //  Copyright © 2017 boqiancheng. All rights reserved.
 //
 
+import Foundation
 import UIKit
+import MBProgressHUD
+import CoreData
+import Alamofire
+import Moya
+import RxSwift
+import Firebase
 
 class LoginVC: UIViewController {
     
@@ -21,25 +28,24 @@ class LoginVC: UIViewController {
     
     @IBOutlet weak var scrollViewBottomDistance: NSLayoutConstraint!
     
-  // for localized language
     @IBOutlet weak var cancelItem: UIBarButtonItem!
     @IBOutlet weak var forgotPWBtn: UIButton!
     @IBOutlet weak var registerBtn: UIButton!
     
     fileprivate var userRole: String?
+    fileprivate var agentCode: String?
+    
+    var userRef: DatabaseReference? // agents or buyers
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-      // for localized
-        self.cancelItem.title = cancelStr
-        self.emailText.placeholder = emailStr
-        self.pwText.placeholder = passwordStr
-        self.loginBtn.setTitle(logInStr, for: .normal)
-        self.forgotPWBtn.setTitle(forgotPWStr, for: .normal)
-        self.registerBtn.setTitle(registerStr, for: .normal)
-        
         self.setUpLogo()
+        
+        noteCenter.addObserver(self, selector: #selector(LoginVC.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        noteCenter.addObserver(self, selector: #selector(LoginVC.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        noteCenter.addObserver(self, selector: #selector(LoginVC.loginCodeApplied(note:)), name: NSNotification.Name(rawValue: "loginApplyCodeNote"), object: nil)
 
         // Do any additional setup after loading the view.
         self.containerEmailPW.layer.borderWidth = 1
@@ -54,7 +60,7 @@ class LoginVC: UIViewController {
         
         let dismiss = UITapGestureRecognizer(target: self, action: #selector(LoginVC.dismissKeyboard))
         self.view.addGestureRecognizer(dismiss)
-        //  dismiss.cancelsTouchesInView = false
+        dismiss.cancelsTouchesInView = false
         
         self.emailText.delegate = self
         self.pwText.delegate = self
@@ -67,18 +73,24 @@ class LoginVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        noteCenter.addObserver(self, selector: #selector(LoginVC.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        noteCenter.addObserver(self, selector: #selector(LoginVC.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        noteCenter.removeObserver(self)
+        
+      // for localized
+        self.cancelItem.title = LanguageGeneral.cancelStr
+        self.emailText.placeholder = LanguageGeneral.emailStr
+        self.pwText.placeholder = LanguageGeneral.passwordStr
+        self.loginBtn.setTitle(LanguageGeneral.logInStr, for: .normal)
+        self.forgotPWBtn.setTitle(LanguageGeneral.forgotPWStr, for: .normal)
+        self.registerBtn.setTitle(LanguageGeneral.registerStr, for: .normal)
     }
     
     @objc fileprivate func dismissKeyboard() {
       //  self.view.endEditing(true)
         UIApplication.shared.sendAction(#selector(resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    @objc fileprivate func loginCodeApplied(note: NSNotification) {
+        
+        self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
     }
     
     // pragma mark - Keyboard notifications
@@ -103,15 +115,16 @@ class LoginVC: UIViewController {
         let duration: TimeInterval = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
         let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! Int
         let options: UIViewAnimationOptions = UIViewAnimationOptions(rawValue: UInt(curve << 16) | UIViewAnimationOptions.beginFromCurrentState.rawValue)
-        UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
-            self.scrollViewBottomDistance.constant = offset
-            
+        
+        self.view.layoutIfNeeded()
+        self.scrollViewBottomDistance.constant = offset
+        UIView.animate(withDuration: duration, delay: 0, options: options, animations: { [weak self] in
+          //  self.scrollViewBottomDistance.constant = offset
+            self?.view.layoutIfNeeded() ?? ()
             // var currentOffset = self.tableView.contentOffset
             // currentOffset.y = currentOffset.y - 100
             // self.tableView.setContentOffset(currentOffset, animated: false)
-        }, completion: { (finished: Bool) -> Void in
-            self.view.layoutIfNeeded()
-        })
+        }, completion: nil)
     }
     
     fileprivate func setUpLogo() {
@@ -154,69 +167,296 @@ class LoginVC: UIViewController {
         
         self.view.endEditing(true)
         
-        if let _emailText = self.emailText.text, let _pwText = self.pwText.text {
+        if let _emailText = self.emailText.text, let _pwText = self.pwText.text, _emailText.count > 2, _pwText.count > 0 {
             let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
             let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegex)
             let testResult = emailTest.evaluate(with: _emailText)
             if !testResult {
-                let alertMsg = errMsgNotRightEmailFormat
-                let okTitle = okStr
+                let alertMsg = LanguageGeneral.errMsgNotRightEmailFormat
+                let okTitle = LanguageGeneral.okStr
                 self.presentAlert(aTitle: nil, withMsg: alertMsg, confirmTitle: okTitle)
             } else {
-                if _pwText.characters.count < 5 {
-                    let alertMsg = errMsgPasswordShort
-                    let okTitle = okStr
+                if _pwText.count < 5 {
+                    let alertMsg = LanguageGeneral.errMsgPasswordShort
+                    let okTitle = LanguageGeneral.okStr
                     self.presentAlert(aTitle: nil, withMsg: alertMsg, confirmTitle: okTitle)
                 } else {
                     self.connectingServer()
                 }
             }
         } else {
-            let alertMsg = errMsgPWEmailEmpty
-            let okTitle = okStr
+            let alertMsg = LanguageGeneral.errMsgPWEmailEmpty
+            let okTitle = LanguageGeneral.okStr
             self.presentAlert(aTitle: nil, withMsg: alertMsg, confirmTitle: okTitle)
         }
     }
     
     fileprivate func connectingServer() {
         
-        self.toMainPages()
+        let progs = MBProgressHUD.showAdded(to: self.view, animated: true)
+        progs.label.text = LanguageGeneral.connectServerStr
+        progs.removeFromSuperViewOnHide = true
+        
+        let emailH: String = self.emailText.text ?? ""
+        let pwH: String = self.pwText.text ?? ""
+        
+        let parameterH: [String:Any] = ["op": "q22",
+                                        "email": emailH,
+                                        "password": pwH]
+        
+        netWorkProvider.rx.request(.login(paras: parameterH)).subscribe { [unowned self] event in
+            progs.hide(animated: true)
+            switch event {
+            case .success(let response):
+                //  print(response.response?.description)
+                //  print(RealHomeAPI.JSONResponseDataFormatter(response.data))
+                do {
+                    if let jsonDic = try response.mapJSON() as? [String:Any] {
+                        if let succ = jsonDic["success"] as? String, succ == "true" {
+                            if let _login = jsonDic["login"] as? String, _login == "true" {
+                                if let _role = jsonDic["role"] as? String {
+                                    self.userRole = _role
+                                    UserDefaults.standard.set(_role, forKey: uRole)
+                                }
+                                if let _nickname = jsonDic["nickname"] as? String {
+                                    UserDefaults.standard.set(_nickname, forKey: uNickName)
+                                }
+                                self.agentCode = jsonDic["agentcode"] as? String
+                                
+                                UserDefaults.standard.set(self.emailText.text, forKey: uEmail)
+                                UserDefaults.standard.set(self.pwText.text, forKey: uPassword)
+                                UserDefaults.standard.synchronize()
+                                self.toMainPages()
+                            } else {
+                                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgCantLogin, confirmTitle: LanguageGeneral.okStr)
+                            }
+                        //   let medStruct = Medicine(object: medJSON)
+                        //   self.medListStruct.append(medStruct)
+                        // print("1-21-12pm-price" + (prop["Price"] as! Float).description)
+                        } else {
+                            self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgCantLogin, confirmTitle: LanguageGeneral.okStr)
+                        }
+                    }
+                } catch {
+                    debugPrint("Mapping Error in login: \(error.localizedDescription)")
+                }
+            case .error(let error):
+                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgNetworkErrorStr, confirmTitle: LanguageGeneral.okStr)
+                debugPrint("Networking Error in login: \(error.localizedDescription)")
+            }}.disposed(by: disposeBag)
+        
+        // the following is full url
+       // print(netWorkProvider.endpoint(.residential(paras: parameterH)).urlRequest?.description ?? "net url")
+        // print(RealHomeAPI.url(RealHomeAPI.residential(paras: parameterH)))
     }
     
     fileprivate func toMainPages() {
         
-        self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
-    
-/*
-        if let _userRole = self.userRole {
-            
-            if _userRole == "buyer" {
-                let storyB = UIStoryboard(name: "LoggedIn", bundle: nil)
-                let controller = storyB.instantiateViewController(withIdentifier: "loggedInBuyer")
-                self.present(controller, animated: true, completion: nil)
-            } else {
-                let storyB = UIStoryboard(name: "LoggedInAgent", bundle: nil)
-                let controller = storyB.instantiateViewController(withIdentifier: "loggedInAgent")
-                self.present(controller, animated: true, completion: nil)
+        if let _agentCode = self.agentCode, _agentCode.count > 2 {
+            if let _userRole = self.userRole {
+                let agentCodeFir: String = "Agent" + _agentCode
+                if _userRole == "buyer" {
+                    if !(CoreDataController.isAgentGroupExistedBuyer(groupID: agentCodeFir)) {
+                        let _ = CoreDataController.createAgentGroupEntityBuyer(groupID: agentCodeFir)
+                    }
+                } else {
+                    if !(CoreDataController.isAgentGroupExisted(groupID: agentCodeFir)) {
+                        let _ = CoreDataController.createAgentGroupEntity(groupID: agentCodeFir)
+                    }
+                }
+            }
+            self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
+        } else {
+            if let _userRole = self.userRole {
+                if _userRole == "buyer" {
+                    self.alertWithTextInput(aTitle: LanguageGeneral.enterAgentCodeStr, withMsg: LanguageGeneral.toGetConnectedStr, confirmTitle: LanguageGeneral.enterStr)
+                } else {
+                    self.enterAndApplyCodeAlert()
+                  /*
+                    self.alertWithTextInput(aTitle: LanguageGeneral.enterYourAgentCodeStr, withMsg: LanguageGeneral.toGetCommunicateStr, confirmTitle: LanguageGeneral.enterStr)
+                  */
+                }
             }
         }
-*/
     }
     
     fileprivate func presentAlert(aTitle: String?, withMsg: String?, confirmTitle: String?) {
         
-        typealias Handler = (UIAlertAction?) -> Void
-        
-        let enterPWHandler: Handler = { [unowned self] action in
-        
-        }
         let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
-        let enterPWAct = UIAlertAction(title: confirmTitle, style: .default, handler: enterPWHandler)
-        alert.addAction(enterPWAct)
-        //   let closeAppAct = UIAlertAction(title: "Close App", style: .default, handler: closeAppHandler)
-        //   alert.addAction(closeAppAct)
+        let acts = UIAlertAction(title: confirmTitle, style: .default, handler: nil)
+        alert.addAction(acts)
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    fileprivate func presentAlertOkAct(aTitle: String?, withMsg: String?, confirmTitle: String?) {
         
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
+        let acts = UIAlertAction(title: confirmTitle, style: .default) { [unowned self] (alertAction) in
+            self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
+        }
+        alert.addAction(acts)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    fileprivate func alertWithTextInput(aTitle: String?, withMsg: String?, confirmTitle: String?) {
+        
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
+        let action = UIAlertAction(title: confirmTitle, style: .default) { [unowned self] (alertAction) in
+            let textField1 = alert.textFields![0] as UITextField
+            let _code: String = textField1.text ?? ""
+            let textField2 = alert.textFields![1] as UITextField
+            var _nickname: String = textField2.text ?? ""
+            
+            if _nickname.count > 0 {
+                
+            } else {
+                let nickN = UserDefaults.standard.object(forKey: uNickName) as? String
+                if let _nickN = nickN, _nickN.count > 0 {
+                    _nickname = _nickN
+                }
+            }
+            
+            self.updateAgentCodeServer(theCode: _code, theNickname: _nickname)
+        }
+        let cancelAct = UIAlertAction(title: LanguageGeneral.cancelStr, style: .destructive) { [unowned self] (alertAction) in
+            self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
+        }
+        alert.addTextField { (textField) in
+            textField.placeholder = LanguageGeneral.agentCodeStr
+            textField.keyboardType = .numberPad
+            textField.clearButtonMode = .whileEditing
+        }
+        alert.addTextField { (textField) in
+            textField.placeholder = LanguageGeneral.yourNameStr
+            textField.keyboardType = .namePhonePad
+            textField.clearButtonMode = .whileEditing
+        }
+        alert.addAction(cancelAct)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    fileprivate func enterAndApplyCodeAlert() {
+        let storyB = UIStoryboard(name: "Main", bundle: nil)
+        let customAlert = storyB.instantiateViewController(withIdentifier: "alertVCsb") as! AlertViewWithApplyVC
+        customAlert.providesPresentationContextTransitionStyle = true
+        customAlert.definesPresentationContext = true
+        customAlert.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
+        customAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
+        customAlert.delegate = self
+        customAlert.originatedVC = "login"
+        self.present(customAlert, animated: true, completion: nil)
+    }
+    
+    fileprivate func updateAgentCodeServer(theCode: String, theNickname: String) {
+        
+        let progs = MBProgressHUD.showAdded(to: self.view, animated: true)
+        progs.label.text = LanguageGeneral.connectServerStr
+        progs.removeFromSuperViewOnHide = true
+        
+        let _emailH = UserDefaults.standard.object(forKey: uEmail) as? String
+        let emailH = _emailH ?? ""
+        
+        let parameterH: [String:Any] = ["op": "q24",
+                                        "email": emailH,
+                                        "role": self.userRole!,
+                                        "agentcode": theCode,
+                                        "nickname": theNickname]
+        
+        netWorkProvider.rx.request(.updateAgentCodeNickname(paras: parameterH)).subscribe { [unowned self] event in
+            progs.hide(animated: true)
+            switch event {
+            case .success(let response):
+                do {
+                    if let jsonDic = try response.mapJSON() as? [String:Any] {
+                        if let succ = jsonDic["success"] as? String, succ == "true" {
+                            if let _codematch = jsonDic["codematch"] as? String, _codematch == "true" {
+                                self.agentCode = theCode
+                                UserDefaults.standard.set(theNickname, forKey: uNickName)
+                                UserDefaults.standard.synchronize()
+                                self.addUserToFir(theCode: theCode)
+                            } else {
+                                self.presentAlertOkAct(aTitle: LanguageGeneral.errMsgNoSuchCode, withMsg: LanguageGeneral.errMsgYouMaySetLater, confirmTitle: LanguageGeneral.okStr)
+                            }
+                            //   let medStruct = Medicine(object: medJSON)
+                            //   self.medListStruct.append(medStruct)
+                            // print("1-21-12pm-price" + (prop["Price"] as! Float).description)
+                        } else {
+                            self.presentAlertOkAct(aTitle: LanguageGeneral.errMsgNoSuchCode, withMsg: LanguageGeneral.errMsgYouMaySetLater, confirmTitle: LanguageGeneral.okStr)
+                        }
+                    }
+                } catch {
+                    debugPrint("Mapping Error in update agent code register: \(error.localizedDescription)")
+                }
+            case .error(let error):
+                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgNetworkErrorStr, confirmTitle: LanguageGeneral.okStr)
+                debugPrint("Networking Error in update agent code register: \(error.localizedDescription)")
+            }}.disposed(by: disposeBag)
+        
+        // the following is full url
+        // print(netWorkProvider.endpoint(.residential(paras: parameterH)).urlRequest?.description ?? "net url")
+        // print(RealHomeAPI.url(RealHomeAPI.residential(paras: parameterH)))
+    }
+    
+    fileprivate func addUserToFir(theCode: String) {
+        let roleH: String = (UserDefaults.standard.object(forKey: uRole) as? String)!
+        let agentCodeFir: String = "Agent" + theCode
+        if roleH == "buyer" {
+            if !(CoreDataController.isAgentGroupExistedBuyer(groupID: agentCodeFir)) {
+                let _ = CoreDataController.createAgentGroupEntityBuyer(groupID: agentCodeFir)
+            }
+            self.checkAndCreate(buyerOrAgent: "buyer", theCode: theCode)
+        } else {
+            if !(CoreDataController.isAgentGroupExisted(groupID: agentCodeFir)) {
+                let _ = CoreDataController.createAgentGroupEntity(groupID: agentCodeFir)
+            }
+            self.checkAndCreate(buyerOrAgent: "agent", theCode: theCode)
+        }
+    }
+    
+    fileprivate func checkAndCreate(buyerOrAgent: String, theCode: String) {
+        let _emailH = UserDefaults.standard.object(forKey: uEmail) as? String
+        let emailH = _emailH ?? ""
+        let _nameH = UserDefaults.standard.object(forKey: uNickName) as? String
+        let nameH = _nameH ?? ""
+        let refPath: String = "Agent" + theCode + "/" + buyerOrAgent + "s"
+        self.userRef = FirebaseNodesCreation.getFirDBInstance().reference(withPath: refPath)
+        
+        if let refH = self.userRef {
+            refH.observe(.value, with: { (snapshot) -> Void in
+                var isCreated: Bool = false
+                for itemSnap in snapshot.children {
+                    if let _itemSnap = itemSnap as? DataSnapshot {
+                        let userDataF = _itemSnap.value as? [String : String] ?? [:]
+                        if let aaEmail = userDataF["email"] {
+                            if aaEmail == emailH {
+                                isCreated = true
+                            }
+                        } else {
+                            print("Error! Could not decode user data in buyer")
+                        }
+                    }
+                }
+                if !isCreated {
+                    let emailC = FirebaseNodesCreation.decodeEmail(email: emailH)
+                    let nodeToAdd = FirebaseNodesCreation.getSubNode(parentNode: refH, node: emailC)
+                    if let imgDataH = UserDefaults.standard.object(forKey: uPhoto) as? Data {
+                        let imgStrH = HelpFunctions.photoToStringBase64(imgData: imgDataH)
+                        let userH = ["email": emailH,
+                                     "name": nameH,
+                                     "nickname": nameH,
+                                     "photo": imgStrH]
+                        nodeToAdd.setValue(userH)
+                    } else {
+                        let userH = ["email": emailH,
+                                     "name": nameH,
+                                     "nickname": nameH]
+                        nodeToAdd.setValue(userH)
+                    }
+                }
+            })
+            self.performSegue(withIdentifier: "loginReturnToMainTab", sender: self)
+        }
     }
     
     /*
@@ -230,6 +470,9 @@ class LoginVC: UIViewController {
     */
     
     deinit {
+        if let refHH = self.userRef {
+            refHH.removeAllObservers()
+        }
         noteCenter.removeObserver(self)
     }
 
@@ -259,5 +502,17 @@ extension LoginVC: UITextFieldDelegate {
         // workaround for jumping text bug
         textField.resignFirstResponder()
         textField.layoutIfNeeded()
+    }
+}
+
+extension LoginVC: AlertViewWithApplyDelegate {
+    
+    func cancelBtntapped() {
+        
+    }
+    
+    
+    func enterBtnTapped(codeStr: String, nickNameStr: String) {
+        self.updateAgentCodeServer(theCode: codeStr, theNickname: nickNameStr)
     }
 }

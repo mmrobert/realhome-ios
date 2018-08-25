@@ -92,4 +92,36 @@ class HelpFunctions: NSObject {
         }
     }
     
+    static public func photoToStringBase64(imgData: Data) -> String {
+        
+        let photoStr = imgData.base64EncodedString(options: .lineLength64Characters)
+        return photoStr
+    }
+    
+    static public func stringBase64ToPhoto(imgString: String) -> Data? {
+        
+        let photoData = Data(base64Encoded: imgString, options: .ignoreUnknownCharacters)
+        return photoData
+    }
+    
+ // the returned height "is not right" if including "emoji", but simple
+    static public func heightForText(text: String, constraintedWidth: CGFloat, font: UIFont) -> CGFloat {
+        
+        let label =  UILabel(frame: CGRect(x: 0, y: 0, width: constraintedWidth, height: .greatestFiniteMagnitude))
+        label.numberOfLines = 0
+        label.text = text
+        label.font = font
+        label.sizeToFit()
+        
+        return label.frame.height
+    }
+    
+ // the returned height "is right" if including "emoji"
+    static public func sizeOfString (string: String, constrainedToWidth width: Double, font: UIFont) -> CGSize {
+        let attributes = [NSFontAttributeName: font]
+        let attString = NSAttributedString(string: string, attributes: attributes)
+        let framesetter = CTFramesetterCreateWithAttributedString(attString)
+        return CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRange(location: 0, length: 0), nil, CGSize(width: width, height: .greatestFiniteMagnitude), nil)
+    }
+    
 }

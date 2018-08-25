@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="71" id="KGk-i7-Jjw" customClass="MsgBoxTableCell" customModule="RealHome" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="344" height="71"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="344" height="70.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="buyer" translatesAutoresizingMaskIntoConstraints="NO" id="Vrc-0j-PA3">
+                        <rect key="frame" x="20" y="11" width="50" height="50"/>
+                        <color key="backgroundColor" red="0.84296303460387145" green="0.8432819121548919" blue="0.84482315365149052" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="Vrc-0j-PA3" secondAttribute="height" multiplier="1:1" id="IeO-gF-oS9"/>
+                            <constraint firstAttribute="height" constant="50" id="vld-Ce-zet"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BhM-M5-1MC">
+                        <rect key="frame" x="90" y="11" width="234" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="BhM-M5-1MC" secondAttribute="trailing" constant="20" id="8hG-AM-EQl"/>
+                    <constraint firstItem="Vrc-0j-PA3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="OW8-Y9-KZv"/>
+                    <constraint firstItem="Vrc-0j-PA3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Oo3-wg-XZS"/>
+                    <constraint firstItem="BhM-M5-1MC" firstAttribute="top" secondItem="Vrc-0j-PA3" secondAttribute="top" id="R75-dV-oCZ"/>
+                    <constraint firstAttribute="bottom" secondItem="Vrc-0j-PA3" secondAttribute="bottom" constant="8" id="ihg-8l-tWZ"/>
+                    <constraint firstItem="BhM-M5-1MC" firstAttribute="leading" secondItem="Vrc-0j-PA3" secondAttribute="trailing" constant="20" id="tvg-8h-aGa"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="nameLabel" destination="BhM-M5-1MC" id="TbX-bC-Rdc"/>
+                <outlet property="photoImgView" destination="Vrc-0j-PA3" id="4yB-fl-BQM"/>
+            </connections>
+            <point key="canvasLocation" x="63" y="90.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="buyer" width="155" height="155"/>
+    </resources>
+</document>

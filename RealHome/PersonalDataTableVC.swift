@@ -9,6 +9,8 @@
 import UIKit
 import Foundation
 import MobileCoreServices
+import Firebase
+import CoreData
 
 class PersonalDataTableVC: UITableViewController {
     
@@ -36,8 +38,8 @@ class PersonalDataTableVC: UITableViewController {
     
     var isDataChanged: Bool = false
     
-    let namesCaptions = [firstNameStr, lastNameStr, nickNameStr]
-    let contactCaptions = [emailStr, phoneStr]
+    var namesCaptions = [LanguageGeneral.firstNameStr, LanguageGeneral.lastNameStr, LanguageGeneral.nickNameStr]
+    var contactCaptions = [LanguageGeneral.emailStr, LanguageGeneral.phoneStr]
     
     var namesFieldValueArr: [String?] = []
     var contactFieldValueArr: [String?] = []
@@ -51,20 +53,24 @@ class PersonalDataTableVC: UITableViewController {
         
         self.tableView.estimatedRowHeight = 50.0
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        
-        self.navigationItem.title = yourPersonalInfoStr
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         let dismiss = UITapGestureRecognizer(target: self, action: #selector(PersonalDataTableVC.dismissKeyboard))
         self.view.addGestureRecognizer(dismiss)
-        //  dismiss.cancelsTouchesInView = false
+        // to prevent tap event mixing with radiobutton for gender choose
+        dismiss.cancelsTouchesInView = false
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        namesCaptions = [LanguageGeneral.firstNameStr, LanguageGeneral.lastNameStr, LanguageGeneral.nickNameStr]
+        contactCaptions = [LanguageGeneral.emailStr, LanguageGeneral.phoneStr]
+        
+        self.navigationItem.title = LanguageGeneral.yourPersonalInfoStr
         
         self.tableView.reloadData()
     }
@@ -137,7 +143,7 @@ class PersonalDataTableVC: UITableViewController {
         logoImageView.contentMode = .scaleAspectFit
         
         let logoLabel = UILabel()
-        logoLabel.text = backStr
+        logoLabel.text = "Back"
         logoLabel.font = UIFont.systemFont(ofSize: 18)
         logoLabel.textAlignment = .left
         logoLabel.textColor = UIColor(red: 4/255, green: 124/255, blue: 252/255, alpha: 1.0)
@@ -172,10 +178,10 @@ class PersonalDataTableVC: UITableViewController {
                 self.navigationController?.popViewController(animated: true)
             }
             
-            let alert = UIAlertController(title: nil, message: errMsgLeavingWithoutSaveStr, preferredStyle: .alert)
-            let notSaveAct = UIAlertAction(title: notSaveStr, style: .default, handler: notSave)
-            let toSaveAct = UIAlertAction(title: saveStr, style: .default, handler: toSave)
-            let cancelAct = UIAlertAction(title: cancelStr, style: .default, handler: nil)
+            let alert = UIAlertController(title: nil, message: LanguageGeneral.errMsgLeavingWithoutSaveStr, preferredStyle: .alert)
+            let notSaveAct = UIAlertAction(title: LanguageGeneral.notSaveStr, style: .default, handler: notSave)
+            let toSaveAct = UIAlertAction(title: LanguageGeneral.saveStr, style: .default, handler: toSave)
+            let cancelAct = UIAlertAction(title: LanguageGeneral.cancelStr, style: .default, handler: nil)
             
             alert.addAction(toSaveAct)
             alert.addAction(notSaveAct)
@@ -193,17 +199,17 @@ class PersonalDataTableVC: UITableViewController {
     }
     
     fileprivate func saveChanges() {
-        
+      
         UserDefaults.standard.set(self.newPhoto, forKey: uPhoto)
         UserDefaults.standard.set(self.newFirstName, forKey: uFirstName)
         UserDefaults.standard.set(self.newLastName, forKey: uLastName)
         UserDefaults.standard.set(self.newNickName, forKey: uNickName)
         UserDefaults.standard.set(self.newGender, forKey: uGender)
-        UserDefaults.standard.set(self.newEmail, forKey: uEmail)
+      //  UserDefaults.standard.set(self.newEmail, forKey: uEmail)
         UserDefaults.standard.set(self.newPhone, forKey: uPhone)
         
         UserDefaults.standard.synchronize()
-        
+     
         self.oldPhoto = self.newPhoto
         self.oldFirstName = self.newFirstName
         self.oldLastName = self.newLastName
@@ -211,6 +217,59 @@ class PersonalDataTableVC: UITableViewController {
         self.oldGender = self.newGender
         self.oldEmail = self.newEmail
         self.oldPhone = self.newPhone
+        
+        self.updatePersonalFir()
+    }
+    
+    fileprivate func updatePersonalFir() {
+        
+        let emailH: String? = UserDefaults.standard.object(forKey: uEmail) as? String
+        if let _emailH = emailH, _emailH.count > 1 {
+            let userRoleH: String? = UserDefaults.standard.object(forKey: uRole) as? String
+            if let _userRoleH = userRoleH, _userRoleH.count > 1 {
+                let emailC = FirebaseNodesCreation.decodeEmail(email: _emailH)
+                let firRefH = FirebaseNodesCreation.firebaseRoot
+                if _userRoleH == "buyer" {
+                    let buyerCodeListH = CoreDataController.fetchAgentGroupsBuyer()
+                    if let _nickN = self.newNickName, _nickN.count > 0 {
+                        for codeII in buyerCodeListH {
+                            if let codeIIStr = codeII.value(forKeyPath: "groupID") as? String, codeIIStr.count > 2 {
+                                let refPath = codeIIStr + "/" + "buyers" + "/" + emailC + "/" + "nickname"
+                                firRefH.child(refPath).setValue(_nickN)
+                            }
+                        }
+                    }
+                    if let imgDataH = self.newPhoto {
+                        let imgStrH = HelpFunctions.photoToStringBase64(imgData: imgDataH)
+                        for codeII in buyerCodeListH {
+                            if let codeIIStr = codeII.value(forKeyPath: "groupID") as? String, codeIIStr.count > 2 {
+                                let refPath = codeIIStr + "/" + "buyers" + "/" + emailC + "/" + "photo"
+                                firRefH.child(refPath).setValue(imgStrH)
+                            }
+                        }
+                    }
+                } else {
+                    let agentCodeListH = CoreDataController.fetchAgentGroups()
+                    if let _nickN = self.newNickName, _nickN.count > 0 {
+                        for codeII in agentCodeListH {
+                            if let codeIIStr = codeII.value(forKeyPath: "groupID") as? String, codeIIStr.count > 2 {
+                                let refPath = codeIIStr + "/" + "agents" + "/" + emailC + "/" + "nickname"
+                                firRefH.child(refPath).setValue(_nickN)
+                            }
+                        }
+                    }
+                    if let imgDataH = self.newPhoto {
+                        let imgStrH = HelpFunctions.photoToStringBase64(imgData: imgDataH)
+                        for codeII in agentCodeListH {
+                            if let codeIIStr = codeII.value(forKeyPath: "groupID") as? String, codeIIStr.count > 2 {
+                                let refPath = codeIIStr + "/" + "agents" + "/" + emailC + "/" + "photo"
+                                firRefH.child(refPath).setValue(imgStrH)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Table view data source
@@ -263,7 +322,9 @@ class PersonalDataTableVC: UITableViewController {
             return cell
         } else if indexPath.section == 2 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "genderCell", for: indexPath) as! GenderChoiceTableCell
-            cell.fieldNameLabel.text = genderStr
+            cell.fieldNameLabel.text = LanguageGeneral.genderStr
+            cell.maleBtn.setTitle(LanguageGeneral.maleStr, for: .normal)
+            cell.femaleBtn.setTitle(LanguageGeneral.femaleStr, for: .normal)
             if let _newGender = self.newGender, _newGender == "male" {
                 cell.maleBtn.isSelected = true
             } else if let _newGender = self.newGender, _newGender == "female" {
@@ -283,7 +344,7 @@ class PersonalDataTableVC: UITableViewController {
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "errorMsgCell", for: indexPath) as! ErrorMsgTableCell
-            cell.errMsgLabel.text = errMsgUnknow
+            cell.errMsgLabel.text = LanguageGeneral.errMsgUnknow
             return cell
         }
 
@@ -396,11 +457,11 @@ extension PersonalDataTableVC: ChangePhotoSettings {
         }
         
         
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet);
-        let albumAct = UIAlertAction(title: chooseFromAlbumStr, style: .default, handler: handlerAlbums)
-        let cameraAct = UIAlertAction(title: takePhotoStr, style: .default, handler: handlerCamera)
-        let cancelAct = UIAlertAction(title: cancelStr, style: .cancel, handler: nil)
-        alert.addAction(albumAct);
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let albumAct = UIAlertAction(title: LanguageGeneral.chooseFromAlbumStr, style: .default, handler: handlerAlbums)
+        let cameraAct = UIAlertAction(title: LanguageGeneral.takePhotoStr, style: .default, handler: handlerCamera)
+        let cancelAct = UIAlertAction(title: LanguageGeneral.cancelStr, style: .cancel, handler: nil)
+        alert.addAction(albumAct)
         alert.addAction(cameraAct)
         alert.addAction(cancelAct)
         
@@ -464,17 +525,19 @@ extension PersonalDataTableVC: UIImagePickerControllerDelegate, UINavigationCont
             //  self.pickedLargeImg = info[UIImagePickerControllerEditedImage] as! UIImage?
             self.pickedLargeImg = info[UIImagePickerControllerOriginalImage] as? UIImage
             if let _pickedLargeImg = self.pickedLargeImg {
-                if let compressedImg = HelpFunctions.compressAndResizeImage(imageIn: _pickedLargeImg, maxWidth: 500, maxHeight: 500, compressionQuality: 0.8) {
+                if let compressedImg = HelpFunctions.compressAndResizeImage(imageIn: _pickedLargeImg, maxWidth: 300, maxHeight: 300, compressionQuality: 0.8) {
                     self.imgData = UIImageJPEGRepresentation(compressedImg, 1.0)
+                    self.newPhoto = self.imgData
                 } else {
-                    self.imgData = UIImageJPEGRepresentation(_pickedLargeImg, 0.5)
+                    self.imgData = UIImageJPEGRepresentation(_pickedLargeImg, 0.7)
+                    self.newPhoto = self.imgData
                 }
             } else {
-                self.presentAlert(aTitle: nil, withMsg: errMsgUnknow, confirmTitle: okStr)
+                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgUnknow, confirmTitle: LanguageGeneral.okStr)
             }
-            self.newPhoto = self.imgData
+         //   self.newPhoto = self.imgData
         } else if mediaType == (kUTTypeMovie as String) {
-            self.presentAlert(aTitle: nil, withMsg: errMsgVideoNotSupportStr, confirmTitle: okStr)
+            self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgVideoNotSupportStr, confirmTitle: LanguageGeneral.okStr)
         }
         
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone {
@@ -493,7 +556,7 @@ extension PersonalDataTableVC: UIImagePickerControllerDelegate, UINavigationCont
     }
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        viewController.navigationItem.title = photoAlbumsStr
+        viewController.navigationItem.title = LanguageGeneral.photoAlbumsStr
     }
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {

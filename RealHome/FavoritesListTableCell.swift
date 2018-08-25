@@ -17,7 +17,8 @@ class FavoritesListTableCell: UITableViewCell {
     @IBOutlet weak var containerView: UIView!
     
     @IBOutlet weak var deleteCrossImg: UIImageView!
-    @IBOutlet weak var houseTypeLabel: UILabel!
+    
+    @IBOutlet weak var bldgTypeLabel: UILabel!
     @IBOutlet weak var saleRentLabel: UILabel!
     
     @IBOutlet weak var photoImg: UIImageView!
@@ -50,6 +51,12 @@ class FavoritesListTableCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    public func setCaptionsLabel() {
+        self.listIDLabel.text = LanguageProperty.listingIDStr
+        self.bedRoomLabel.text = LanguageProperty.bedsStr
+        self.bathRoomLabel.text = LanguageProperty.bathsStr
     }
     
     @objc fileprivate func crossTapped(regognizer: UITapGestureRecognizer) {

@@ -6,7 +6,12 @@
 //  Copyright © 2017 boqiancheng. All rights reserved.
 //
 
+import Foundation
 import UIKit
+import MBProgressHUD
+import Alamofire
+import Moya
+import RxSwift
 
 class ForgotPasswordVC: UIViewController {
     
@@ -20,12 +25,6 @@ class ForgotPasswordVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-      
-    // for localized
-        self.navigationItem.title = resetPasswordStr
-        self.resetReminderLabel.text = resetPWreminderStr
-        self.emailText.placeholder = emailStr
-        self.resetBtn.setTitle(resetPasswordStr, for: .normal)
 
         // Do any additional setup after loading the view.
         
@@ -38,9 +37,7 @@ class ForgotPasswordVC: UIViewController {
         
         let dismiss = UITapGestureRecognizer(target: self, action: #selector(ForgotPasswordVC.dismissKeyboard))
         self.view.addGestureRecognizer(dismiss)
-        //  dismiss.cancelsTouchesInView = false
-        
-        //  self.resetOutlet.layer.cornerRadius = 10
+        dismiss.cancelsTouchesInView = false
         
         self.emailText.delegate = self
     }
@@ -52,6 +49,13 @@ class ForgotPasswordVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+      // for language localized
+        self.navigationItem.title = LanguageGeneral.resetPasswordStr
+        self.resetReminderLabel.text = LanguageGeneral.resetPWreminderStr
+        self.emailText.placeholder = LanguageGeneral.emailStr
+        self.resetBtn.setTitle(LanguageGeneral.resetPasswordStr, for: .normal)
+        
         noteCenter.addObserver(self, selector: #selector(ForgotPasswordVC.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         noteCenter.addObserver(self, selector: #selector(ForgotPasswordVC.keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
@@ -88,15 +92,16 @@ class ForgotPasswordVC: UIViewController {
         let duration: TimeInterval = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
         let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! Int
         let options: UIViewAnimationOptions = UIViewAnimationOptions(rawValue: UInt(curve << 16) | UIViewAnimationOptions.beginFromCurrentState.rawValue)
-        UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
-            self.scrollViewBottomDistance.constant = offset
-            
+        
+        self.view.layoutIfNeeded()
+        self.scrollViewBottomDistance.constant = offset
+        UIView.animate(withDuration: duration, delay: 0, options: options, animations: { [weak self] in
+          //  self.scrollViewBottomDistance.constant = offset
+            self?.view.layoutIfNeeded() ?? ()
             // var currentOffset = self.tableView.contentOffset
             // currentOffset.y = currentOffset.y - 100
             // self.tableView.setContentOffset(currentOffset, animated: false)
-        }, completion: { (finished: Bool) -> Void in
-            self.view.layoutIfNeeded()
-        })
+        }, completion: nil)
     }
 
     @IBAction func resetPasswordAction(_ sender: Any) {
@@ -108,26 +113,55 @@ class ForgotPasswordVC: UIViewController {
             let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegex)
             let testResult = emailTest.evaluate(with: _emailText)
             if !testResult {
-                let alertMsg = errMsgNotRightEmailFormat
-                let okTitle = okStr
+                let alertMsg = LanguageGeneral.errMsgNotRightEmailFormat
+                let okTitle = LanguageGeneral.okStr
                 self.presentAlert(aTitle: nil, withMsg: alertMsg, confirmTitle: okTitle)
             } else {
                 self.connectingServer()
             }
         } else {
-            let alertMsg = errMsgProvideEmail
-            let okTitle = okStr
+            let alertMsg = LanguageGeneral.errMsgProvideEmail
+            let okTitle = LanguageGeneral.okStr
             self.presentAlert(aTitle: nil, withMsg: alertMsg, confirmTitle: okTitle)
         }
     }
     
     fileprivate func connectingServer() {
-        self.toLoginPage()
+        
+        let progs = MBProgressHUD.showAdded(to: self.view, animated: true)
+        progs.label.text = LanguageGeneral.connectServerStr
+        progs.removeFromSuperViewOnHide = true
+        
+        let emailH: String = self.emailText.text ?? ""
+        
+        let parameterH: [String:Any] = ["op": "q28",
+                                        "email": emailH]
+        
+        netWorkProvider.rx.request(.resetPassword(paras: parameterH)).subscribe { [unowned self] event in
+            progs.hide(animated: true)
+            switch event {
+            case .success(let response):
+                do {
+                    if let jsonDic = try response.mapJSON() as? [String:Any] {
+                        let _message = jsonDic["message"] as? String
+                        if let succ = jsonDic["success"] as? String, succ == "true" {
+                            self.toLoginPage()
+                        } else {
+                            self.presentAlert(aTitle: nil, withMsg: _message, confirmTitle: LanguageGeneral.okStr)
+                        }
+                    }
+                } catch {
+                    debugPrint("Mapping Error in login: \(error.localizedDescription)")
+                }
+            case .error(let error):
+                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgNetworkErrorStr, confirmTitle: LanguageGeneral.okStr)
+                debugPrint("Networking Error in login: \(error.localizedDescription)")
+            }}.disposed(by: disposeBag)
     }
     
     fileprivate func toLoginPage() {
-        let alertMessage = errMsgSentEmailResetPW
-        let okTitle = okStr
+        let alertMessage = LanguageGeneral.errMsgSentEmailResetPW
+        let okTitle = LanguageGeneral.okStr
         
         typealias Handler = (UIAlertAction?) -> Void
         

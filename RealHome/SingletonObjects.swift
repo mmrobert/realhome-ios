@@ -12,7 +12,7 @@ import Moya
 import Alamofire
 import RxSwift
 
-let netWorkProvider: RxMoyaProvider = RxMoyaProvider<RealHomeAPI>()
+let netWorkProvider: MoyaProvider = MoyaProvider<RealHomeAPI>()
 let disposeBag = DisposeBag()
 
 let noteCenter = NotificationCenter.default

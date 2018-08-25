@@ -12,6 +12,7 @@ import MBProgressHUD
 import Alamofire
 import Moya
 import RxSwift
+import Firebase
 
 class AuthorizationVC: UIViewController {
     
@@ -26,6 +27,18 @@ class AuthorizationVC: UIViewController {
         self.appNameLabel.text = appName
         
         self.errorMsgLabel.text = ""
+        
+        noteCenter.addObserver(self, selector: #selector(AuthorizationVC.newLanguageChoosed(note:)), name: NSNotification.Name(rawValue: "LanguageChosed"), object: nil)
+        
+        // for test
+   //     UserDefaults.standard.set("agent11@aaa.com", forKey: uEmail)
+   //     UserDefaults.standard.set("12345", forKey: uPassword)
+   //     UserDefaults.standard.synchronize()
+        //
+  //      UserDefaults.standard.set("", forKey: uEmail)
+  //      UserDefaults.standard.set("", forKey: uPassword)
+  //      UserDefaults.standard.synchronize()
+        //
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,136 +46,73 @@ class AuthorizationVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @objc fileprivate func newLanguageChoosed(note: NSNotification) {
+        let languageUsed = UserDefaults.standard.object(forKey: uLanguage)
+        
+        if let _language = languageUsed as? String {
+            LanguageGeneral.setLang(Lang: _language)
+            LanguageProperty.setLang(Lang: _language)
+        } else {
+            LanguageGeneral.setLang(Lang: englishStr)
+            LanguageProperty.setLang(Lang: englishStr)
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         self.errorMsgLabel.text = ""
-        /*
-         NSString *email = @"aa@bb.ca";
-         [[NSUserDefaults standardUserDefaults] setObject:email forKey:myEmail];
-         NSString *password = @"12345";
-         [[NSUserDefaults standardUserDefaults] setObject:password forKey:myPassword];
-         NSString *role = @"customer";
-         [[NSUserDefaults standardUserDefaults] setObject:role forKey:myRole];
-         [[NSUserDefaults standardUserDefaults] synchronize];
-         */
         
-        let userEmail = UserDefaults.standard.object(forKey: uEmail) as? String
-        let userPassword = UserDefaults.standard.object(forKey: uPassword) as? String
+        let languageUsed = UserDefaults.standard.object(forKey: uLanguage)
         
-        //  [[NSUserDefaults standardUserDefaults] removeObjectForKey:myCountry];
-        
-        if let _ = userEmail, let _ = userPassword {
-            self.connectingServer()
+        if let _language = languageUsed as? String {
+            LanguageGeneral.setLang(Lang: _language)
+            LanguageProperty.setLang(Lang: _language)
         } else {
+            LanguageGeneral.setLang(Lang: englishStr)
+            LanguageProperty.setLang(Lang: englishStr)
+        }
         
-            UserDefaults.standard.set(true, forKey: uFirstLogIn)
-            UserDefaults.standard.synchronize()
-            
-            let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
-            let controller = storyB.instantiateViewController(withIdentifier: "MainTabsNotLoggedIn")
-            self.present(controller, animated: true, completion: nil)
- /*
-            let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
-            let controller = storyB.instantiateViewController(withIdentifier: "BuyerTabsLoggedIn")
-            self.present(controller, animated: true, completion: nil)
- */
+        let uTokenH = UserDefaults.standard.object(forKey: uToken) as? String
+        if let _uTokenH = uTokenH, _uTokenH.count > 20 {            
+            toMainTabPage()
+        } else {
+            updateDeviceInfoServer()
         }
     }
     
-// networking
-    
-    fileprivate func connectingServer() -> Void {
-        let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-        hud.label.text = connectServerStr
+    fileprivate func updateDeviceInfoServer() {
+        let progs = MBProgressHUD.showAdded(to: self.view, animated: true)
+        progs.label.text = LanguageGeneral.connectServerStr
+        progs.removeFromSuperViewOnHide = true
         
-        let userToken = UserDefaults.standard.object(forKey: uToken)
-        let allowNotification = UserDefaults.standard.object(forKey: uNotificationAllow)
-        let dToken = UserDefaults.standard.object(forKey: uDeviceToken)
+        let parameterH: [String:Any] = ["op": "q51"]
         
-        netWorkProvider.requestWithProgress(.index).subscribe { [unowned self] event in
-            MBProgressHUD.hide(for: self.view, animated: true)
+        netWorkProvider.rx.request(.getUUID(paras: parameterH)).subscribe { [unowned self] event in
+            progs.hide(animated: true)
             switch event {
-            case .next(let response):
-                if response.completed {
-                    do {
-                        if let jsonArray = try response.response?.mapJSON() as? Array<Any> {
-                            if jsonArray.count > 0 {
-                                for medJSON: [String : Any] in jsonArray as! [[String : Any]] {
-                                    //   let medStruct = Medicine(object: medJSON)
-                                    //   self.medListStruct.append(medStruct)
-                                }
-                            }
+            case .success(let response):
+                do {
+                    if let jsonDic = try response.mapJSON() as? [String:Any] {
+                        if let uuidH = jsonDic["uuid"] as? String, uuidH.count > 20 {
+                            UserDefaults.standard.set(uuidH, forKey: uToken)
+                            UserDefaults.standard.synchronize()
                         }
-                    } catch {
-                        debugPrint("Mapping Error: \(error.localizedDescription)")
                     }
-                    // to-do
-                    self.toLoggedInPages()
+                } catch {
+                    debugPrint("Mapping Error in login: \(error.localizedDescription)")
                 }
+                self.toMainTabPage()
             case .error(let error):
-                debugPrint("Mapping Error: \(error.localizedDescription)")
-                self.errorMsgLabel.text = errMsgRestartApp
-            default:
-                break
-            }}.addDisposableTo(disposeBag)
+                debugPrint("Networking Error in login: \(error.localizedDescription)")
+                self.toMainTabPage()
+            }}.disposed(by: disposeBag)
     }
     
-    fileprivate func toLoggedInPages() {
-        
-        let userRole: String? = UserDefaults.standard.object(forKey: uRole) as? String
-        
-        if let _userRole = userRole, _userRole == "buyer" {
-            UserDefaults.standard.set(false, forKey: uFirstLogIn)
-            UserDefaults.standard.synchronize()
-            let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
-            let controller = storyB.instantiateViewController(withIdentifier: "BuyerTabsLoggedIn")
-            self.present(controller, animated: true, completion: nil)
-        } else {
-            UserDefaults.standard.set(false, forKey: uFirstLogIn)
-            UserDefaults.standard.synchronize()
-            let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
-            let controller = storyB.instantiateViewController(withIdentifier: "AgentTabsLoggedIn")
-            self.present(controller, animated: true, completion: nil)
-        }
-    }
-    
-    @IBAction func returnedFromLogOutToAuth(segue: UIStoryboardSegue) {
-        
-    }
-    
-    fileprivate func presentAlert(aTitle: String?, withMsg: String?, confirmTitle: String?) {
-        
-        typealias Handler = (UIAlertAction?) -> Void
-        
-        let enterPWHandler: Handler = {action in
-            
-            /*
-             NSString *tagStr = [NSString stringWithFormat:@"%ld", (long)tapGestureRecognizer.view.tag];
-             //    NSLog(@"uuuuuuuuTTT---%@", tagStr);
-             controller.viewTag = tagStr;
-             */
-            /*
-             if (self.responds(to: #selector(self.show(_:sender:)))) {
-             self.show(controller, sender: self)
-             } else {
-             self.navigationController?.pushViewController(controller, animated: true)
-             }
-             */
-            //  self.present(controller, animated: true, completion: nil)
-        }
-        /*
-         let closeAppHandler: Handler = {action in
-         exit(0)
-         }
-         */
-        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
-        let enterPWAct = UIAlertAction(title: confirmTitle, style: .default, handler: enterPWHandler)
-        alert.addAction(enterPWAct)
-        //   let closeAppAct = UIAlertAction(title: "Close App", style: .default, handler: closeAppHandler)
-        //   alert.addAction(closeAppAct)
-        self.present(alert, animated: true, completion: nil)
-        
+    fileprivate func toMainTabPage() {
+        let storyB = UIStoryboard(name: "TabsControllers", bundle: nil)
+        let controller = storyB.instantiateViewController(withIdentifier: "MainTabsControllerSB")
+        self.present(controller, animated: true, completion: nil)
     }
     
     /*
@@ -175,4 +125,7 @@ class AuthorizationVC: UIViewController {
     }
     */
 
+    deinit {
+        noteCenter.removeObserver(self)
+    }
 }

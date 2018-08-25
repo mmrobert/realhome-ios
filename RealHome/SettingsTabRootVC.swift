@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import CoreData
+import MBProgressHUD
+import Firebase
 
 class SettingsTabRootVC: UITableViewController {
 
@@ -21,12 +24,14 @@ class SettingsTabRootVC: UITableViewController {
     @IBOutlet weak var userImgView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     
+    @IBOutlet weak var logoutCell: UITableViewCell!
+    
+    public weak var agentGroupDelegate: AddAgentGroup?
+    
+    var userRef: DatabaseReference? // agents or buyers
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.languagelabel.text = languageStr
-        self.contactUsLabel.text = contactUsStr
-        self.logOutLabel.text = logOutStr
         
       //  self.tableView.estimatedRowHeight = 50.0
       //  self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -37,25 +42,21 @@ class SettingsTabRootVC: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.setUpLogo()
-        self.signInItemBtn.title = signInStr
-        
-        let userEmail = UserDefaults.standard.object(forKey: uEmail)
-        let userPassword = UserDefaults.standard.object(forKey: uPassword)
-        if let _ = userEmail, let _ = userPassword {
-            self.signInItemBtn.isEnabled = false
-            self.signInItemBtn.tintColor = UIColor.clear
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.languagelabel.text = LanguageGeneral.languageStr
+        self.contactUsLabel.text = LanguageGeneral.contactUsStr
+        self.logOutLabel.text = LanguageGeneral.logOutStr
         
         let tempLanguage = UserDefaults.standard.object(forKey: uLanguage)
         
         if let _tempLanguage = tempLanguage as? String {
             self.languageContentLabel.text = _tempLanguage
         } else {
-            self.languageContentLabel.text = english
+            self.languageContentLabel.text = englishStr
         }
         
         let imgData = UserDefaults.standard.object(forKey: uPhoto) as? Data
@@ -66,20 +67,65 @@ class SettingsTabRootVC: UITableViewController {
         }
         
         let nameFirst = UserDefaults.standard.object(forKey: uFirstName) as? String
-        if let _nameFirst = nameFirst, (_nameFirst.trimmingCharacters(in: .whitespacesAndNewlines)).characters.count > 0 {
+        if let _nameFirst = nameFirst, (_nameFirst.trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 {
             self.userNameLabel.text = _nameFirst
         } else {
             let nameLast = UserDefaults.standard.object(forKey: uLastName) as? String
-            if let _nameLast = nameLast, (_nameLast.trimmingCharacters(in: .whitespacesAndNewlines)).characters.count > 0 {
+            if let _nameLast = nameLast, (_nameLast.trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 {
                 self.userNameLabel.text = _nameLast
             } else {
                 let nameNick = UserDefaults.standard.object(forKey: uNickName) as? String
-                if let _nameNick = nameNick, (_nameNick.trimmingCharacters(in: .whitespacesAndNewlines)).characters.count > 0 {
+                if let _nameNick = nameNick, (_nameNick.trimmingCharacters(in: .whitespacesAndNewlines)).count > 0 {
                     self.userNameLabel.text = _nameNick
                 } else {
-                    self.userNameLabel.text = ""
+                    self.userNameLabel.text = LanguageGeneral.nameStr
                 }
             }
+        }
+        
+        let userEmail = UserDefaults.standard.object(forKey: uEmail) as? String
+        let userPassword = UserDefaults.standard.object(forKey: uPassword) as? String
+        let userRole: String? = UserDefaults.standard.object(forKey: uRole) as? String
+        
+        if let em = userEmail, let pa = userPassword, em.count > 1, pa.count > 0 {
+            self.logoutCell.isUserInteractionEnabled = true
+            self.logoutCell.isHidden = false
+        } else {
+            self.logoutCell.isUserInteractionEnabled = false
+            self.logoutCell.isHidden = true
+        }
+        
+        var agentGroupID: String?
+        if let _userRole = userRole, _userRole == "buyer" {
+            let idArrH = CoreDataController.fetchAgentGroupsBuyer()
+            if idArrH.count > 0 {
+                agentGroupID = idArrH[0].value(forKeyPath: "groupID") as? String
+            }
+        } else {
+            let idArrH = CoreDataController.fetchAgentGroups()
+            if idArrH.count > 0 {
+                agentGroupID = idArrH[0].value(forKeyPath: "groupID") as? String
+            }
+        }
+        
+        if let em = userEmail, let pa = userPassword, em.count > 1, pa.count > 0 {
+            if let _agentGroupID = agentGroupID, _agentGroupID.count > 2 {
+                self.signInItemBtn.isEnabled = false
+                self.signInItemBtn.tintColor = UIColor.clear
+            } else {
+                self.signInItemBtn.isEnabled = true
+                self.signInItemBtn.tintColor = nil
+                
+                if let _roleH = userRole, _roleH == "buyer" {
+                    self.signInItemBtn.title = LanguageGeneral.contactAgentStr
+                } else {
+                    self.signInItemBtn.title = LanguageGeneral.connectBuyersStr
+                }
+            }
+        } else {
+            self.signInItemBtn.isEnabled = true
+            self.signInItemBtn.tintColor = nil
+            self.signInItemBtn.title = LanguageGeneral.signInStr
         }
     }
 
@@ -173,10 +219,224 @@ class SettingsTabRootVC: UITableViewController {
 */
     
     @IBAction func signinAction(_ sender: Any) {
-        let storyB = UIStoryboard(name: "Main", bundle: nil)
-        let controller = storyB.instantiateViewController(withIdentifier: "loginNavigator")
-        self.present(controller, animated: true, completion: nil)
+        
+        let userEmail = UserDefaults.standard.object(forKey: uEmail) as? String
+        let userPassword = UserDefaults.standard.object(forKey: uPassword) as? String
+        let userRole: String? = UserDefaults.standard.object(forKey: uRole) as? String
+        
+        var agentGroupID: String?
+        if let _userRole = userRole, _userRole == "buyer" {
+            let idArrH = CoreDataController.fetchAgentGroupsBuyer()
+            if idArrH.count > 0 {
+                agentGroupID = idArrH[0].value(forKeyPath: "groupID") as? String
+            }
+        } else {
+            let idArrH = CoreDataController.fetchAgentGroups()
+            if idArrH.count > 0 {
+                agentGroupID = idArrH[0].value(forKeyPath: "groupID") as? String
+            }
+        }
+        
+        if let em = userEmail, let pa = userPassword, em.count > 1, pa.count > 0 {
+            if let _agentGroupID = agentGroupID, _agentGroupID.count > 2 {
+                // left button is disabled and doing nothing
+            } else {
+                if let _roleH = userRole, _roleH == "buyer" {
+                    self.alertWithTextInput(aTitle: LanguageGeneral.enterAgentCodeStr, withMsg: LanguageGeneral.toGetConnectedStr, confirmTitle: LanguageGeneral.enterStr)
+                } else {
+                    self.enterAndApplyCodeAlert()
+                  /*
+                    self.alertWithTextInput(aTitle: LanguageGeneral.enterYourAgentCodeStr, withMsg: LanguageGeneral.toGetCommunicateStr, confirmTitle: LanguageGeneral.enterStr)
+                  */
+                }
+            }
+        } else {
+            let storyB = UIStoryboard(name: "Main", bundle: nil)
+            let controller = storyB.instantiateViewController(withIdentifier: "loginNavigator")
+            self.present(controller, animated: true, completion: nil)
+        }
     }
     
+    fileprivate func alertWithTextInput(aTitle: String?, withMsg: String?, confirmTitle: String?) {
+        
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
+        let action = UIAlertAction(title: confirmTitle, style: .default) { [unowned self] (alertAction) in
+            let textField1 = alert.textFields![0] as UITextField
+            let _code: String = textField1.text ?? ""
+            let textField2 = alert.textFields![1] as UITextField
+            var _nickname: String = textField2.text ?? ""
+            
+            if _nickname.count > 0 {
+                
+            } else {
+                let nickN = UserDefaults.standard.object(forKey: uNickName) as? String
+                if let _nickN = nickN, _nickN.count > 0 {
+                    _nickname = _nickN
+                }
+            }
+            
+            self.updateAgentCodeServer(theCode: _code, theNickname: _nickname)
+        }
+        let cancelAct = UIAlertAction(title: LanguageGeneral.cancelStr, style: .destructive, handler: nil)
+        alert.addTextField { (textField) in
+            textField.placeholder = LanguageGeneral.agentCodeStr
+            textField.keyboardType = .numberPad
+            textField.clearButtonMode = .whileEditing
+        }
+        alert.addTextField { (textField) in
+            textField.placeholder = LanguageGeneral.yourNameStr
+            textField.keyboardType = .namePhonePad
+            textField.clearButtonMode = .whileEditing
+        }
+        alert.addAction(cancelAct)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    fileprivate func enterAndApplyCodeAlert() {
+        let storyB = UIStoryboard(name: "Main", bundle: nil)
+        let customAlert = storyB.instantiateViewController(withIdentifier: "alertVCsb") as! AlertViewWithApplyVC
+        customAlert.providesPresentationContextTransitionStyle = true
+        customAlert.definesPresentationContext = true
+        customAlert.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
+        customAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
+        customAlert.delegate = self
+        customAlert.originatedVC = ""
+        self.present(customAlert, animated: true, completion: nil)
+    }
 
+    fileprivate func updateAgentCodeServer(theCode: String, theNickname: String) {
+        
+        let progs = MBProgressHUD.showAdded(to: self.view, animated: true)
+        progs.label.text = LanguageGeneral.connectServerStr
+        progs.removeFromSuperViewOnHide = true
+        
+        let emailH: String = (UserDefaults.standard.object(forKey: uEmail) as? String)!
+        let roleH: String = (UserDefaults.standard.object(forKey: uRole) as? String)!
+        
+        let parameterH: [String:Any] = ["op": "q24",
+                                        "email": emailH,
+                                        "role": roleH,
+                                        "agentcode": theCode,
+                                        "nickname": theNickname]
+        
+        netWorkProvider.rx.request(.updateAgentCodeNickname(paras: parameterH)).subscribe { [unowned self] event in
+            progs.hide(animated: true)
+            switch event {
+            case .success(let response):
+                do {
+                    if let jsonDic = try response.mapJSON() as? [String:Any] {
+                        if let succ = jsonDic["success"] as? String, succ == "true" {
+                            if let _codematch = jsonDic["codematch"] as? String, _codematch == "true" {
+                                UserDefaults.standard.set(theNickname, forKey: uNickName)
+                                UserDefaults.standard.synchronize()
+                                self.addUserToFir(theCode: theCode)
+                            } else {
+                                self.presentAlert(aTitle: LanguageGeneral.errMsgNoSuchCode, withMsg: LanguageGeneral.errMsgYouMaySetLater, confirmTitle: LanguageGeneral.okStr)
+                            }
+                        } else {
+                            self.presentAlert(aTitle: LanguageGeneral.errMsgNoSuchCode, withMsg: LanguageGeneral.errMsgYouMaySetLater, confirmTitle: LanguageGeneral.okStr)
+                        }
+                    }
+                } catch {
+                    debugPrint("Mapping Error in update agent code favorite-tab: \(error.localizedDescription)")
+                }
+            case .error(let error):
+                self.presentAlert(aTitle: nil, withMsg: LanguageGeneral.errMsgNetworkErrorStr, confirmTitle: LanguageGeneral.okStr)
+                debugPrint("Networking Error in update agent code favorite-tab: \(error.localizedDescription)")
+            }}.disposed(by: disposeBag)
+        
+        // the following is full url
+        // print(netWorkProvider.endpoint(.residential(paras: parameterH)).urlRequest?.description ?? "net url")
+    }
+    
+    fileprivate func addUserToFir(theCode: String) {
+        let roleH: String = (UserDefaults.standard.object(forKey: uRole) as? String)!
+        let agentCodeFir: String = "Agent" + theCode
+        if roleH == "buyer" {
+            if !(CoreDataController.isAgentGroupExistedBuyer(groupID: agentCodeFir)) {
+                let _ = CoreDataController.createAgentGroupEntityBuyer(groupID: agentCodeFir)
+            }
+            self.checkAndCreate(buyerOrAgent: "buyer", theCode: theCode)
+        } else {
+            if !(CoreDataController.isAgentGroupExisted(groupID: agentCodeFir)) {
+                let _ = CoreDataController.createAgentGroupEntity(groupID: agentCodeFir)
+            }
+            self.checkAndCreate(buyerOrAgent: "agent", theCode: theCode)
+        }
+    }
+    
+    fileprivate func checkAndCreate(buyerOrAgent: String, theCode: String) {
+        let _emailH: String? = UserDefaults.standard.object(forKey: uEmail) as? String
+        let emailH: String = _emailH ?? ""
+        let _nameH: String? = UserDefaults.standard.object(forKey: uNickName) as? String
+        let nameH: String = _nameH ?? ""
+        let _roleH: String? = UserDefaults.standard.object(forKey: uRole) as? String
+        let roleH: String = _roleH ?? ""
+        let refPath: String = "Agent" + theCode + "/" + buyerOrAgent + "s"
+        self.userRef = FirebaseNodesCreation.getFirDBInstance().reference(withPath: refPath)
+        
+        if let refH = self.userRef {
+            refH.observe(.value, with: { (snapshot) -> Void in
+                var isCreated: Bool = false
+                for itemSnap in snapshot.children {
+                    if let _itemSnap = itemSnap as? DataSnapshot {
+                        let userDataF = _itemSnap.value as? [String : String] ?? [:]
+                        if let aaEmail = userDataF["email"] {
+                            if aaEmail == emailH {
+                                isCreated = true
+                            }
+                        } else {
+                            print("Error! Could not decode user data in buyer")
+                        }
+                    }
+                }
+                if !isCreated {
+                    let emailC = FirebaseNodesCreation.decodeEmail(email: emailH)
+                    let nodeToAdd = FirebaseNodesCreation.getSubNode(parentNode: refH, node: emailC)
+                    if let imgDataH = UserDefaults.standard.object(forKey: uPhoto) as? Data {
+                        let imgStrH = HelpFunctions.photoToStringBase64(imgData: imgDataH)
+                        let userH = ["email": emailH,
+                                     "name": nameH,
+                                     "nickname": nameH,
+                                     "photo": imgStrH]
+                        nodeToAdd.setValue(userH)
+                    } else {
+                        let userH = ["email": emailH,
+                                     "name": nameH,
+                                     "nickname": nameH]
+                        nodeToAdd.setValue(userH)
+                    }
+                }
+            })
+            if let _delegate = self.agentGroupDelegate {
+                _delegate.toAddAgentGroup(role: roleH)
+            }
+        }
+    }
+    
+    fileprivate func presentAlert(aTitle: String?, withMsg: String?, confirmTitle: String?) {
+        
+        let alert = UIAlertController(title: aTitle, message: withMsg, preferredStyle: .alert)
+        let enterPWAct = UIAlertAction(title: confirmTitle, style: .default, handler: nil)
+        alert.addAction(enterPWAct)
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    
+    deinit {
+        if let refHH = self.userRef {
+            refHH.removeAllObservers()
+        }
+    }
+}
+
+extension SettingsTabRootVC: AlertViewWithApplyDelegate {
+    func enterBtnTapped(codeStr: String, nickNameStr: String) {
+        self.updateAgentCodeServer(theCode: codeStr, theNickname: nickNameStr)
+    }
+    
+    func cancelBtntapped() {
+        
+    }
 }

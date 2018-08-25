@@ -36,7 +36,7 @@ class TextFieldSettingsTableCell: UITableViewCell {
 extension TextFieldSettingsTableCell: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == self.textField{
+        if textField == self.textField {
             textField.resignFirstResponder()
         }
         return true
